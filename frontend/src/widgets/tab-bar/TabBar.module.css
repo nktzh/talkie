@@ -1,0 +1,76 @@
+/* Центрируем через margin, а не transform: он ломает backdrop-filter внутри */
+.bar {
+  position: fixed;
+  z-index: 20;
+  left: 0;
+  right: 0;
+  bottom: calc(12px + var(--safe-area-bottom));
+  width: fit-content;
+  max-width: calc(100vw - 24px - var(--safe-area-left) - var(--safe-area-right));
+  margin-inline: auto;
+}
+
+.tabs {
+  display: flex;
+  align-items: stretch;
+  gap: 2px;
+  padding: 4px;
+}
+
+.tab {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-width: 84px;
+  height: var(--tab-bar-height);
+  padding: 0 10px;
+  border-radius: var(--radius-full);
+  color: var(--color-text-secondary);
+  transition:
+    background-color var(--duration-fast),
+    color var(--duration-fast);
+}
+
+/* Активная вкладка лежит в собственной «капле» стекла — без контура */
+.active {
+  background: var(--color-tab-active);
+  color: var(--color-accent-text);
+}
+
+.glyph {
+  position: relative;
+  display: grid;
+  place-items: center;
+  height: 24px;
+}
+
+.label {
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.active .label {
+  font-weight: 600;
+}
+
+.badge {
+  position: absolute;
+  top: -6px;
+  left: 12px;
+  display: grid;
+  place-items: center;
+  min-width: 17px;
+  height: 17px;
+  padding: 0 5px;
+  border-radius: var(--radius-full);
+  background: var(--color-badge);
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}

@@ -1,0 +1,19 @@
+.alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  text-align: left;
+}
+
+.error {
+  background: var(--color-danger-soft);
+  color: var(--color-danger);
+}
+
+.success {
+  background: var(--color-accent-soft);
+  color: var(--color-accent-text);
+}

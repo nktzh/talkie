@@ -1,0 +1,105 @@
+.reply {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 6px 0 14px;
+  animation: reply-enter var(--duration-base) var(--ease-out);
+}
+
+.icon {
+  flex-shrink: 0;
+  margin-right: 4px;
+  color: var(--color-accent-text);
+}
+
+/* Та же цитата, что в пузыре: полоса слева, имя автора и строка текста */
+.target {
+  position: relative;
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  padding: 3px 8px 3px 11px;
+  overflow: hidden;
+  border-radius: 8px;
+  text-align: left;
+  transition: background-color var(--duration-fast);
+}
+
+.target::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 3px;
+  border-radius: 2px;
+  background: var(--color-accent);
+}
+
+button.target:hover {
+  background: var(--color-menu-item-hover);
+}
+
+.target:focus-visible {
+  outline-offset: -2px;
+}
+
+.thumb {
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  border-radius: 5px;
+  object-fit: cover;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.author,
+.text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13.5px;
+  line-height: 1.35;
+}
+
+.author {
+  font-weight: 600;
+  color: var(--color-accent-text);
+}
+
+.source {
+  font-weight: 400;
+}
+
+.text {
+  color: var(--color-text-secondary);
+}
+
+.reply .action {
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  color: var(--color-text-secondary);
+}
+
+.reply .action:hover {
+  color: var(--color-accent-text);
+}
+
+@keyframes reply-enter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reply {
+    animation: none;
+  }
+}

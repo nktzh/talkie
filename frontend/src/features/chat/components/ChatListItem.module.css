@@ -1,0 +1,129 @@
+.item {
+  --avatar-ring: var(--color-surface);
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 10px;
+  border-radius: var(--radius-md);
+  transition: background-color var(--duration-fast);
+}
+
+/*
+ * На сенсорных экранах долгое нажатие открывает меню чата: предпросмотр ссылки в iOS,
+ * перетаскивание ссылки и выделение текста строки перехватили бы жест
+ */
+@media (hover: none) and (pointer: coarse) {
+  .item {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-user-drag: none;
+  }
+}
+
+.item:hover,
+.item[data-menu-open] {
+  --avatar-ring: var(--color-surface-hover);
+
+  background: var(--color-surface-hover);
+}
+
+.active,
+.active:hover,
+.active[data-menu-open] {
+  --avatar-ring: var(--color-surface-selected);
+
+  background: var(--color-surface-selected);
+}
+
+.item:focus-visible {
+  outline-offset: -2px;
+}
+
+.body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  min-height: 22px;
+}
+
+.kindIcon {
+  color: var(--color-text-secondary);
+}
+
+.title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.mutedIcon {
+  color: var(--color-text-tertiary);
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  flex-shrink: 0;
+  margin-left: auto;
+  padding-left: 8px;
+  font-size: 12.5px;
+  color: var(--color-text-tertiary);
+}
+
+.status {
+  color: var(--color-accent-text);
+}
+
+.preview {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+.previewAuthor {
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.badge {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 7px;
+  flex-shrink: 0;
+  border-radius: var(--radius-full);
+  background: var(--color-badge);
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.badgeMuted {
+  background: var(--color-badge-muted);
+}
+
+.pinIcon {
+  color: var(--color-text-tertiary);
+}

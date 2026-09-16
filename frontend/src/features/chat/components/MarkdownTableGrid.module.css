@@ -1,0 +1,35 @@
+.picker {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(5, 20px);
+  gap: 3px;
+}
+
+.cell {
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 3px;
+  background: transparent;
+  transition:
+    background-color var(--duration-fast),
+    border-color var(--duration-fast);
+}
+
+.cellFilled {
+  border-color: var(--color-accent);
+  background: var(--color-accent);
+}
+
+.hint {
+  font-size: 12.5px;
+  text-align: center;
+  color: var(--color-text-tertiary);
+  font-variant-numeric: tabular-nums;
+}

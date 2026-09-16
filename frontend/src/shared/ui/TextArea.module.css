@@ -1,0 +1,77 @@
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
+
+.control {
+  display: flex;
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  background: var(--color-input-bg);
+  border: 1.5px solid transparent;
+  transition:
+    border-color var(--duration-fast),
+    background-color var(--duration-fast),
+    box-shadow var(--duration-fast);
+}
+
+.control:hover {
+  border-color: var(--color-border-strong);
+}
+
+.control:focus-within {
+  background: var(--color-input-bg-focus);
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 4px var(--color-focus-ring);
+}
+
+.invalid,
+.invalid:hover {
+  border-color: var(--color-danger);
+}
+
+.invalid:focus-within {
+  border-color: var(--color-danger);
+  box-shadow: 0 0 0 4px var(--color-danger-soft);
+}
+
+.input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  font-size: 15px;
+  line-height: 1.45;
+  resize: vertical;
+}
+
+/* Меньше 16px — iOS приближает страницу при фокусе */
+@media (pointer: coarse) {
+  .input {
+    font-size: 16px;
+  }
+}
+
+.input:focus-visible {
+  outline: none;
+}
+
+.input::placeholder {
+  color: var(--color-text-tertiary);
+}
+
+.description {
+  font-size: 13px;
+  color: var(--color-text-tertiary);
+}
+
+.error {
+  color: var(--color-danger);
+}

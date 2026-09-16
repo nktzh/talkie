@@ -1,0 +1,20 @@
+/* Шапка списка прозрачна для событий, стеклянная кнопка их принимает */
+.glass {
+  flex-shrink: 0;
+  pointer-events: auto;
+}
+
+/*
+ * Кнопка заполняет стеклянный круг: фон и контур даёт стекло.
+ * Селектор через .glass — чтобы перебить стили IconButton независимо от порядка CSS.
+ */
+.glass .button {
+  width: 42px;
+  height: 42px;
+  border-radius: inherit;
+  color: var(--color-text);
+}
+
+.glass .button:hover {
+  background: var(--color-menu-item-hover);
+}

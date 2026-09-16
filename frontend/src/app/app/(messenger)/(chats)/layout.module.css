@@ -1,0 +1,65 @@
+.layout {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+}
+
+.sidebar {
+  /* Ширина по умолчанию; сужается на средних экранах, пока пользователь не задал свою */
+  --sidebar-default-width: var(--sidebar-width);
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: var(--sidebar-custom-width, var(--sidebar-default-width));
+  /* Растянутый список не должен вытеснять чат; уже исходной ширины не сжимаем */
+  max-width: max(var(--sidebar-default-width), 50%);
+  flex-shrink: 0;
+  min-height: 0;
+  background: var(--color-surface);
+  border-right: 1px solid var(--color-border);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+}
+
+@media (max-width: 1100px) {
+  .sidebar {
+    --sidebar-default-width: 300px;
+  }
+}
+
+/* На узких экранах показываем либо список, либо открытый чат */
+@media (--mobile) {
+  .sidebar {
+    width: 100%;
+    max-width: none;
+    border-right: 0;
+  }
+
+  .resizeHandle {
+    display: none;
+  }
+
+  .layout:has([data-chat-open]) .sidebar {
+    display: none;
+  }
+
+  .layout:not(:has([data-chat-open])) .content {
+    display: none;
+  }
+
+  /* Маршрут списка важнее маркера открытого чата: список не должен пропасть вместе с навигацией */
+  .layout:has([data-chat-list]) .sidebar {
+    display: flex;
+  }
+
+  .layout:has([data-chat-list]) .content {
+    display: none;
+  }
+}

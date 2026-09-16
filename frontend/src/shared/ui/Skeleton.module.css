@@ -1,0 +1,22 @@
+.skeleton {
+  display: block;
+  flex-shrink: 0;
+  max-width: 100%;
+  border-radius: var(--radius-xs);
+  /* Цвет меняют через переменную: порядок CSS-модулей в сборке не гарантирован, и класс снаружи мог бы проиграть */
+  background: var(--skeleton-color, var(--color-border));
+  animation: skeleton-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes skeleton-pulse {
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Глобальное правило лишь укорачивает анимацию — бесконечная мигала бы, поэтому выключаем её совсем */
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+  }
+}

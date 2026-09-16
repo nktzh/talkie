@@ -1,0 +1,50 @@
+.preview {
+  /* Размер задан явно по обеим осям: при aspect-ratio вертикальный кадр мобильной камеры растягивал подложку */
+  --preview-size: min(300px, 64vw);
+  --preview-size: min(300px, 64vw, 45dvh);
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 12px);
+  width: var(--preview-size);
+  height: var(--preview-size);
+  translate: -50% 0;
+  border-radius: 50%;
+  background: #000;
+  box-shadow: var(--shadow-lg);
+  animation: preview-enter var(--duration-base) var(--ease-out);
+}
+
+/* Видео не участвует в раскладке: кадр любой ориентации обрезается до круга, не меняя размер подложки */
+.video {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  /* Фронтальная камера показывается зеркально, как в зеркале */
+  scale: -1 1;
+}
+
+/* У SVG размер задаётся явно: одних inset для заменяемого элемента браузерам недостаточно */
+.ring {
+  position: absolute;
+  top: -6px;
+  left: -6px;
+  width: calc(100% + 12px);
+  height: calc(100% + 12px);
+  color: var(--color-accent);
+}
+
+@keyframes preview-enter {
+  from {
+    opacity: 0;
+    scale: 0.6;
+  }
+
+  to {
+    opacity: 1;
+    scale: 1;
+  }
+}

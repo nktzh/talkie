@@ -1,0 +1,53 @@
+/* Последний раздел панели: снизу нужен воздух, иначе список упирается в край */
+.section {
+  padding-bottom: 24px;
+}
+
+/* Полоса прокрутки видна намеренно: без неё не догадаться, что справа есть ещё вкладки.
+   Вид — тонкий, из глобальных стилей */
+.tabs {
+  display: flex;
+  gap: 4px;
+  margin: 0 -4px 6px;
+  padding: 0 4px 8px;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+}
+
+/* Вкладки растягиваются на всю ширину, но не ужимаются: если не влезли — лента прокручивается */
+.tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  flex: 1 0 auto;
+  height: 32px;
+  padding: 0 8px;
+  border-radius: var(--radius-full);
+  background: var(--color-input-bg);
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  transition:
+    background-color var(--duration-fast),
+    color var(--duration-fast);
+}
+
+.activeTab {
+  background: var(--color-accent-soft);
+  color: var(--color-accent-text);
+  font-weight: 600;
+}
+
+.count {
+  font-variant-numeric: tabular-nums;
+  opacity: 0.7;
+}
+
+.empty {
+  padding: 24px 8px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--color-text-tertiary);
+}

@@ -1,0 +1,71 @@
+/*
+ * Поле из жидкого стекла, как панель ввода сообщения: скругление, контур и тень рисует LiquidGlass.
+ * Рамки и подсветки при фокусе нет — о фокусе говорит иконка.
+ */
+.glass {
+  /* Шапка списка прозрачна для событий, поле их принимает */
+  pointer-events: auto;
+}
+
+.search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 42px;
+  padding: 0 12px;
+}
+
+.icon {
+  color: var(--color-text-tertiary);
+  transition: color var(--duration-fast);
+}
+
+.search:focus-within .icon {
+  color: var(--color-accent-text);
+}
+
+.input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  border: 0;
+  background: transparent;
+  font-size: 15px;
+}
+
+/* Меньше 16px — iOS приближает страницу при фокусе */
+@media (pointer: coarse) {
+  .input {
+    font-size: 16px;
+  }
+}
+
+.input:focus-visible {
+  outline: none;
+}
+
+.input::placeholder {
+  color: var(--color-text-tertiary);
+}
+
+.input::-webkit-search-cancel-button {
+  appearance: none;
+}
+
+.clear {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  margin-right: -4px;
+  border-radius: 50%;
+  color: var(--color-text-tertiary);
+  transition:
+    background-color var(--duration-fast),
+    color var(--duration-fast);
+}
+
+.clear:hover {
+  background: var(--color-surface-hover);
+  color: var(--color-text);
+}

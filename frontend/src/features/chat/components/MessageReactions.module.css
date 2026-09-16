@@ -1,0 +1,56 @@
+/*
+ * Цвета берутся из переменных пузыря (MessageBubble.module.css), поэтому одни и те же
+ * кнопки читаются и на входящем, и на исходящем, и под кружком без фона
+ */
+.list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.reaction {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 28px;
+  padding: 0 10px 0 7px;
+  border-radius: var(--radius-full);
+  background: var(--bubble-reaction-bg);
+  box-shadow: var(--bubble-reaction-shadow, none);
+  color: var(--bubble-reaction-text);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1;
+  transition:
+    background-color var(--duration-fast),
+    color var(--duration-fast),
+    scale var(--duration-fast) var(--ease-out);
+}
+
+.reaction:hover:not(:disabled) {
+  background: var(--bubble-reaction-bg-hover);
+}
+
+.reaction:active:not(:disabled) {
+  scale: 0.94;
+}
+
+/* Глобальные стили убирают обводку у кнопок — фокус с клавиатуры показываем кольцом */
+.reaction:focus-visible {
+  box-shadow: 0 0 0 2px var(--color-focus-ring);
+}
+
+.chosen,
+.chosen:hover:not(:disabled) {
+  background: var(--bubble-accent);
+  color: var(--bubble-accent-contrast);
+}
+
+.emoji {
+  font-family: var(--font-emoji);
+  font-size: 16px;
+}
+
+.count {
+  font-variant-numeric: tabular-nums;
+}

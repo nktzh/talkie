@@ -1,0 +1,518 @@
+.row {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  margin-top: 2px;
+  padding: 0 16px;
+}
+
+.first {
+  margin-top: 10px;
+}
+
+.post {
+  margin-top: 12px;
+}
+
+.outgoing {
+  justify-content: flex-end;
+}
+
+/*
+ * Склеенным пузырям хватает 2px: их прямые края идут вплотную. Верх и низ кружка —
+ * точка, и с тем же зазором он будто упирается в соседа, поэтому вокруг него шире
+ */
+.videoNoteRow:not(.first, .post),
+.videoNoteRow + .row:not(.first, .post) {
+  margin-top: 8px;
+}
+
+/*
+ * Сообщение, к которому перешли из панели «Информация»: строка вспыхивает и гаснет.
+ * Подложка — отдельным слоем с отступом от краёв ленты, иначе скругление упрётся в них.
+ * isolation держит слой под пузырём, но над фоном ленты
+ */
+.row[data-highlighted] {
+  position: relative;
+  isolation: isolate;
+}
+
+.row[data-highlighted]::before {
+  content: "";
+  position: absolute;
+  inset: -1px 8px;
+  z-index: -1;
+  border-radius: var(--radius-lg);
+  animation: highlight 1.6s var(--ease-out) forwards;
+}
+
+@keyframes highlight {
+  0%,
+  35% {
+    background: var(--color-accent-soft);
+  }
+
+  100% {
+    background: transparent;
+  }
+}
+
+.avatarSlot {
+  width: 34px;
+  flex-shrink: 0;
+}
+
+.bubble {
+  /* Цвета для вложенных элементов (плеер, файлы): переопределяются у исходящих */
+  --bubble-accent: var(--color-accent);
+  --bubble-accent-contrast: #ffffff;
+  --bubble-muted: var(--color-bubble-in-meta);
+  --bubble-track: var(--color-border-strong);
+  --bubble-reaction-text: var(--color-accent-text);
+  --bubble-reaction-bg: var(--color-accent-soft);
+  --bubble-reaction-bg-hover: color-mix(in srgb, var(--color-accent) 24%, transparent);
+  --bubble-quote-accent: var(--color-accent-text);
+  --bubble-quote-bg: var(--color-accent-soft);
+  --bubble-quote-bg-hover: color-mix(in srgb, var(--color-accent) 22%, transparent);
+
+  min-width: 0;
+  max-width: min(520px, 80%);
+  padding: 6px 12px 7px;
+  border-radius: 18px;
+  box-shadow: var(--shadow-sm);
+}
+
+.incoming .bubble,
+.post .bubble {
+  background: var(--color-bubble-in);
+  color: var(--color-bubble-in-text);
+}
+
+.outgoing .bubble {
+  --bubble-accent: #ffffff;
+  --bubble-accent-contrast: var(--color-bubble-out);
+  --bubble-muted: var(--color-bubble-out-meta);
+  --bubble-track: rgb(255 255 255 / 0.4);
+  --bubble-reaction-text: #ffffff;
+  --bubble-reaction-bg: rgb(255 255 255 / 0.18);
+  --bubble-reaction-bg-hover: rgb(255 255 255 / 0.28);
+  --bubble-quote-accent: #ffffff;
+  --bubble-quote-bg: rgb(255 255 255 / 0.16);
+  --bubble-quote-bg-hover: rgb(255 255 255 / 0.26);
+
+  background: var(--color-bubble-out);
+  color: var(--color-bubble-out-text);
+}
+
+/*
+ * На сенсорных экранах долгое нажатие открывает меню сообщения: системное выделение текста
+ * и выноска iOS «Скопировать / Сохранить изображение» мешали бы. Копирование и сохранение — в самом меню
+ */
+@media (hover: none) and (pointer: coarse) {
+  .bubble {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+}
+
+/* Пузырь, для которого открыто контекстное меню */
+.bubble[data-menu-open] {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 1px;
+}
+
+.post .bubble {
+  max-width: min(600px, 100%);
+  padding: 10px 14px 9px;
+}
+
+/* Размеченному сообщению нужно больше места: заголовки, списки и таблицы */
+.withMarkdown {
+  max-width: min(620px, 92%);
+  padding: 8px 12px 6px;
+}
+
+.markdown {
+  /* Таблица и блок кода прокручиваются внутри пузыря, а не растягивают его */
+  min-width: 0;
+}
+
+/* Подряд идущие сообщения одного автора визуально склеиваются, у последнего — «хвостик» */
+.incoming:not(.first) .bubble {
+  border-top-left-radius: 6px;
+}
+
+.incoming:not(.last) .bubble {
+  border-bottom-left-radius: 6px;
+}
+
+.incoming.last .bubble {
+  border-bottom-left-radius: 4px;
+}
+
+.outgoing:not(.first) .bubble {
+  border-top-right-radius: 6px;
+}
+
+.outgoing:not(.last) .bubble {
+  border-bottom-right-radius: 6px;
+}
+
+.outgoing.last .bubble {
+  border-bottom-right-radius: 4px;
+}
+
+.author {
+  display: block;
+  margin-bottom: 1px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--color-accent-text);
+}
+
+/* ===== Шапка: откуда переслано и на что ответили ===== */
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  margin: 1px 0 4px;
+}
+
+.forwarded {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  font-size: 13.5px;
+  line-height: 1.3;
+  color: var(--bubble-quote-accent);
+}
+
+.forwardedIcon {
+  flex-shrink: 0;
+  margin-right: 4px;
+}
+
+.forwardedLabel {
+  flex-shrink: 0;
+}
+
+.forwardedName {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+a.forwardedName:hover {
+  text-decoration: underline;
+}
+
+/*
+ * Цитата: полоса слева и подложка в цвете пузыря. Кнопкам ширину задаём явно —
+ * иначе они сжимаются по содержимому, а не тянутся на пузырь
+ */
+.reply {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+  padding: 4px 10px 4px 11px;
+  overflow: hidden;
+  border-radius: 8px;
+  background: var(--bubble-quote-bg);
+  color: inherit;
+  text-align: left;
+  transition: background-color var(--duration-fast);
+}
+
+.reply::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 3px;
+  background: var(--bubble-quote-accent);
+}
+
+button.reply:hover,
+a.reply:hover {
+  background: var(--bubble-quote-bg-hover);
+}
+
+.replyThumb {
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  border-radius: 5px;
+  object-fit: cover;
+}
+
+.replyBody {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.replyAuthor,
+.replyText {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13.5px;
+  line-height: 1.3;
+}
+
+.replyAuthor {
+  font-weight: 600;
+  color: var(--bubble-quote-accent);
+}
+
+.replyChat {
+  font-weight: 400;
+}
+
+.replyDeleted .replyText {
+  font-style: italic;
+  color: var(--bubble-muted);
+}
+
+.text {
+  font-size: 15px;
+  line-height: 1.4;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* Время «обтекается» текстом: встаёт в конец последней строки, если хватает места */
+.meta {
+  float: right;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin: 7px -2px -5px 12px;
+  font-size: 12px;
+  line-height: 1;
+  white-space: nowrap;
+  user-select: none;
+  color: var(--color-bubble-in-meta);
+}
+
+.outgoing .meta {
+  color: var(--color-bubble-out-meta);
+}
+
+.views {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  margin-right: 4px;
+}
+
+/* Голосовые и файлы: время отдельной строкой справа */
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Время голосового — справа в строке длительности: отступы пузыря те же, что у текста */
+.voiceOnly {
+  position: relative;
+}
+
+.voiceOnly .meta {
+  position: absolute;
+  right: -2px;
+  bottom: 4px;
+  float: none;
+  margin: 0;
+}
+
+.metaRow {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 2px;
+}
+
+.metaRow .meta {
+  float: none;
+  margin: 0;
+}
+
+/* Реакции — последней строкой пузыря; clear — чтобы не обтекали время, плавающее в конце текста */
+.reactions {
+  clear: both;
+  padding: 6px 0 2px;
+}
+
+/* Изображения занимают пузырь почти целиком */
+/* Селектор с .post — чтобы перебить отступы поста: иначе фото в канале не доходит до краёв пузыря */
+.withImages,
+.post .withImages {
+  padding: 3px;
+}
+
+.withImages .author {
+  padding: 4px 9px 2px;
+}
+
+.withImages .header {
+  margin: 0;
+  padding: 5px 6px 3px;
+}
+
+/* Имя автора уже дало отступ сверху */
+.withImages .author + .header {
+  padding-top: 0;
+}
+
+.withImages .forwarded {
+  padding: 0 3px;
+}
+
+.withImages .content,
+.withImages .markdown,
+.withImages .text,
+.withImages .metaRow {
+  padding-right: 9px;
+  padding-left: 9px;
+}
+
+.withImages .content,
+.withImages .markdown {
+  padding-top: 8px;
+}
+
+.withImages .text {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.withImages .metaRow {
+  padding-bottom: 4px;
+}
+
+.withImages .reactions {
+  padding: 6px 6px 3px;
+}
+
+.media {
+  position: relative;
+}
+
+.metaOverlay {
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+  padding: 4px 8px;
+  border-radius: var(--radius-full);
+  background: rgb(0 0 0 / 0.45);
+}
+
+.metaOverlay .meta,
+.outgoing .metaOverlay .meta {
+  float: none;
+  margin: 0;
+  color: #ffffff;
+}
+
+/* ===== Кружок: без фона пузыря; селектор с .row перебивает цвета входящих и исходящих ===== */
+.row .withVideoNote {
+  max-width: none;
+  padding: 0;
+  background: none;
+  box-shadow: none;
+}
+
+.withVideoNote .author {
+  padding: 0 4px 4px;
+}
+
+/* Под кружком нет пузыря: реакции — на собственной подложке и в цветах входящего сообщения */
+.row .withVideoNote {
+  --bubble-accent: var(--color-accent);
+  --bubble-accent-contrast: #ffffff;
+  --bubble-reaction-text: var(--color-accent-text);
+  --bubble-reaction-bg: var(--color-bubble-in);
+  --bubble-reaction-bg-hover: var(--color-surface-hover);
+  --bubble-reaction-shadow: var(--shadow-sm);
+  --bubble-quote-accent: var(--color-accent-text);
+  --bubble-quote-bg: var(--color-accent-soft);
+  --bubble-quote-bg-hover: color-mix(in srgb, var(--color-accent) 22%, transparent);
+  --bubble-muted: var(--color-bubble-in-meta);
+}
+
+/* Шапка кружка — на подложке входящего сообщения, не шире самого кружка */
+.withVideoNote .header {
+  width: fit-content;
+  /* Ширина кружка: процент от пузыря, который сам сжимается по содержимому, не ограничил бы шапку */
+  max-width: min(240px, 60vw);
+  margin: 0 0 6px;
+  padding: 6px;
+  border-radius: 14px;
+  background: var(--color-bubble-in);
+  color: var(--color-bubble-in-text);
+  box-shadow: var(--shadow-sm);
+}
+
+.outgoing .withVideoNote .header {
+  margin-left: auto;
+}
+
+.withVideoNote .forwarded {
+  padding: 0 4px;
+}
+
+.withVideoNote .reactions {
+  padding: 6px 0 0;
+}
+
+.outgoing .withVideoNote .reactions {
+  justify-content: flex-end;
+}
+
+/* Подсветка открытого меню — кольцом вокруг самого кружка */
+.withVideoNote[data-menu-open] {
+  outline: none;
+}
+
+.withVideoNote[data-menu-open] .videoNote {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+.videoNote {
+  position: relative;
+  border-radius: 50%;
+}
+
+/* Плашки не выходят за квадрат кружка — край совпадает с краем соседних пузырей */
+.videoNote .metaOverlay {
+  right: 0;
+  bottom: 6px;
+  /* Без строчного бокса — плашка той же высоты, что длительность слева */
+  display: flex;
+}
+
+@media (--mobile) {
+  .row {
+    padding: 0 8px;
+  }
+
+  .row[data-highlighted]::before {
+    inset: -1px 4px;
+  }
+
+  .bubble {
+    max-width: 86%;
+  }
+
+  .withMarkdown {
+    max-width: 92%;
+  }
+}

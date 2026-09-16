@@ -1,0 +1,208 @@
+/* ===== Палитра бренда ===== */
+:root {
+  --malibu-50: #eff7ff;
+  --malibu-100: #dcecfd;
+  --malibu-200: #c1dffc;
+  --malibu-300: #8bc7fa;
+  --malibu-400: #64aff6;
+  --malibu-500: #3f8ff2;
+  --malibu-600: #2a72e6;
+  --malibu-700: #215cd4;
+  --malibu-800: #214bac;
+  --malibu-900: #214287;
+  --malibu-950: #182a53;
+
+  --font-sans: var(--font-inter), system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: var(--font-roboto-mono), ui-monospace, "SF Mono", "Cascadia Mono", Consolas, monospace;
+  /* Цветные эмодзи системы: у Inter своих нет, а без явного стека браузер может взять монохромные */
+  --font-emoji: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+
+  /*
+   * Безопасные зоны: вырезы, строка состояния, полоса «домой». Работают благодаря viewport-fit=cover.
+   * Нижняя обнуляется, пока открыта экранная клавиатура (data-keyboard-open ставит VisualViewportHeight):
+   * клавиатура закрывает полосу «домой», и отступ под ней висел бы пустой щелью над клавиатурой
+   */
+  --safe-area-top: env(safe-area-inset-top, 0px);
+  --safe-area-right: env(safe-area-inset-right, 0px);
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-area-left: env(safe-area-inset-left, 0px);
+
+  --nav-rail-width: 76px;
+  --sidebar-width: 360px;
+  /* Правая панель с информацией об открытом чате: ширина рассчитана на ленту вкладок */
+  --info-panel-width: 380px;
+  /* Высота плавающей панели вкладок на мобильных + отступы вокруг неё */
+  --tab-bar-height: 62px;
+  --tab-bar-space: calc(var(--tab-bar-height) + 24px + var(--safe-area-bottom));
+  --header-height: 64px;
+  --content-max-width: 880px;
+
+  --duration-fast: 120ms;
+  --duration-base: 220ms;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+:root[data-keyboard-open] {
+  --safe-area-bottom: 0px;
+}
+
+/* ===== Светлая тема (по умолчанию) =====
+   Фоны, рамки и текст — нейтральные серые; malibu — только акценты. */
+:root {
+  color-scheme: light;
+
+  --color-bg: #f4f4f5;
+  --color-surface: #ffffff;
+  --color-surface-raised: #ffffff;
+  --color-surface-hover: #ededf0;
+  --color-surface-selected: var(--malibu-100);
+  --color-chat-bg: #eeeef1;
+  --color-border: #e4e4e7;
+  --color-border-strong: #d4d4d8;
+
+  --color-text: #18181b;
+  --color-text-secondary: #52525b;
+  --color-text-tertiary: #71717a;
+  --color-text-on-accent: #ffffff;
+
+  --color-accent: var(--malibu-600);
+  --color-accent-hover: var(--malibu-700);
+  --color-accent-soft: var(--malibu-100);
+  --color-accent-text: var(--malibu-700);
+  --color-focus-ring: rgb(63 143 242 / 0.35);
+
+  --color-input-bg: #f4f4f5;
+  --color-input-bg-focus: #ffffff;
+
+  /* Сероватая подложка «жидкого стекла»: фон под ней размывается и преломляется */
+  --color-glass-tint: rgb(48 48 54 / 0.46);
+  --color-menu-item-hover: rgb(0 0 0 / 0.06);
+  --color-menu-separator: rgb(0 0 0 / 0.08);
+  --color-tab-active: rgb(255 255 255 / 0.44);
+
+  --color-bubble-out: var(--malibu-600);
+  --color-bubble-out-text: #ffffff;
+  --color-bubble-out-meta: rgb(255 255 255 / 0.85);
+  --color-bubble-in: #ffffff;
+  --color-bubble-in-text: var(--color-text);
+  --color-bubble-in-meta: var(--color-text-tertiary);
+
+  --color-badge: var(--malibu-600);
+  --color-badge-muted: #a1a1aa;
+  --color-online: var(--malibu-500);
+
+  --color-danger: #d7373f;
+  --color-danger-soft: #fdeced;
+
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.06);
+  --shadow-md: 0 6px 20px rgb(0 0 0 / 0.06);
+  --shadow-lg: 0 24px 60px rgb(0 0 0 / 0.1);
+}
+
+/* ===== Тёмная тема =====
+   Почти чёрная, но слоистая: чем «ближе» поверхность к пользователю, тем она светлее.
+   Применяется, если пользователь выбрал её явно (data-theme="dark"),
+   либо если выбор не сделан и в системе включена тёмная тема.
+   Значения в двух блоках ниже должны совпадать. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --color-bg: #070708;
+  --color-surface: #0e0e10;
+  --color-surface-raised: #1c1c20;
+  --color-surface-hover: #18181b;
+  --color-surface-selected: #17253a;
+  --color-chat-bg: #09090b;
+  --color-border: #1c1c1f;
+  --color-border-strong: #2e2e33;
+
+  --color-text: #ececee;
+  --color-text-secondary: #a1a1aa;
+  --color-text-tertiary: #7f7f88;
+
+  --color-accent: var(--malibu-600);
+  --color-accent-hover: var(--malibu-500);
+  --color-accent-soft: rgb(63 143 242 / 0.16);
+  --color-accent-text: var(--malibu-400);
+  --color-focus-ring: rgb(100 175 246 / 0.4);
+
+  --color-input-bg: #18181b;
+  --color-input-bg-focus: #0e0e10;
+
+  --color-glass-tint: rgb(30 30 34 / 0.62);
+  --color-menu-item-hover: rgb(255 255 255 / 0.08);
+  --color-menu-separator: rgb(255 255 255 / 0.08);
+  --color-tab-active: rgb(255 255 255 / 0.1);
+
+  --color-bubble-out: var(--malibu-700);
+  --color-bubble-out-meta: rgb(255 255 255 / 0.75);
+  --color-bubble-in: #1a1a1d;
+  --color-bubble-in-meta: #85858e;
+
+  --color-badge: var(--malibu-600);
+  --color-badge-muted: #3f3f46;
+  --color-online: var(--malibu-400);
+
+  --color-danger: #f0666d;
+  --color-danger-soft: rgb(240 102 109 / 0.14);
+
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.5);
+  --shadow-md: 0 8px 24px rgb(0 0 0 / 0.5);
+  --shadow-lg: 0 24px 60px rgb(0 0 0 / 0.6);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+
+    --color-bg: #070708;
+    --color-surface: #0e0e10;
+    --color-surface-raised: #1c1c20;
+    --color-surface-hover: #18181b;
+    --color-surface-selected: #17253a;
+    --color-chat-bg: #09090b;
+    --color-border: #1c1c1f;
+    --color-border-strong: #2e2e33;
+
+    --color-text: #ececee;
+    --color-text-secondary: #a1a1aa;
+    --color-text-tertiary: #7f7f88;
+
+    --color-accent: var(--malibu-600);
+    --color-accent-hover: var(--malibu-500);
+    --color-accent-soft: rgb(63 143 242 / 0.16);
+    --color-accent-text: var(--malibu-400);
+    --color-focus-ring: rgb(100 175 246 / 0.4);
+
+    --color-input-bg: #18181b;
+    --color-input-bg-focus: #0e0e10;
+
+    --color-glass-tint: rgb(30 30 34 / 0.62);
+    --color-menu-item-hover: rgb(255 255 255 / 0.08);
+    --color-menu-separator: rgb(255 255 255 / 0.08);
+    --color-tab-active: rgb(255 255 255 / 0.1);
+
+    --color-bubble-out: var(--malibu-700);
+    --color-bubble-out-meta: rgb(255 255 255 / 0.75);
+    --color-bubble-in: #1a1a1d;
+    --color-bubble-in-meta: #85858e;
+
+    --color-badge: var(--malibu-600);
+    --color-badge-muted: #3f3f46;
+    --color-online: var(--malibu-400);
+
+    --color-danger: #f0666d;
+    --color-danger-soft: rgb(240 102 109 / 0.14);
+
+    --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.5);
+    --shadow-md: 0 8px 24px rgb(0 0 0 / 0.5);
+    --shadow-lg: 0 24px 60px rgb(0 0 0 / 0.6);
+  }
+}

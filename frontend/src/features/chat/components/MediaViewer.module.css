@@ -1,0 +1,158 @@
+/*
+ * Окно на весь экран. Цвета заданы явно: диалог лежит внутри пузыря и иначе унаследовал бы
+ * цвет текста исходящего сообщения. Фон тёмный в обеих темах — на нём лучше видно фото
+ */
+.viewer {
+  width: 100vw;
+  max-width: none;
+  height: 100dvh;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: rgb(0 0 0 / 0.92);
+  color: #ffffff;
+  font-size: 14px;
+}
+
+.viewer[open] {
+  display: flex;
+  flex-direction: column;
+  animation: viewer-enter var(--duration-base) var(--ease-out);
+}
+
+.viewer:focus-visible {
+  outline: none;
+}
+
+.viewer::backdrop {
+  background: transparent;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  /* Окно в верхнем слое и не наследует отступы оболочки — обходит вырезы и строку состояния само */
+  padding: calc(10px + var(--safe-area-top)) calc(12px + var(--safe-area-right)) 10px
+    calc(20px + var(--safe-area-left));
+}
+
+.caption {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.counter {
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  color: rgb(255 255 255 / 0.6);
+}
+
+.toolbarButton,
+.nav {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  border-radius: 50%;
+  color: rgb(255 255 255 / 0.85);
+  transition:
+    background-color var(--duration-fast),
+    color var(--duration-fast);
+}
+
+.toolbarButton {
+  width: 42px;
+  height: 42px;
+}
+
+.toolbarButton:hover,
+.nav:hover {
+  background: rgb(255 255 255 / 0.12);
+  color: #ffffff;
+}
+
+/* Сцена — size-контейнер: фото и видео считают свой размер от её ширины и высоты */
+.stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  min-height: 0;
+  padding: 0 calc(72px + var(--safe-area-right)) calc(24px + var(--safe-area-bottom))
+    calc(72px + var(--safe-area-left));
+  container-type: size;
+}
+
+/* Маленькие фото не растягиваем больше их настоящего размера — иначе они расплываются */
+.imageFrame {
+  position: relative;
+  width: min(100cqw, 100cqh * var(--media-ratio), var(--natural-width));
+  aspect-ratio: var(--media-ratio);
+}
+
+.image {
+  object-fit: contain;
+}
+
+.nav {
+  position: absolute;
+  top: 50%;
+  width: 52px;
+  height: 52px;
+  translate: 0 -50%;
+}
+
+.previous {
+  left: calc(12px + var(--safe-area-left));
+}
+
+.next {
+  right: calc(12px + var(--safe-area-right));
+}
+
+@media (--mobile) {
+  .toolbar {
+    padding-left: calc(16px + var(--safe-area-left));
+  }
+
+  .stage {
+    padding: 0 var(--safe-area-right) calc(16px + var(--safe-area-bottom)) var(--safe-area-left);
+  }
+
+  /* На телефоне стрелки лежат поверх фото — подложка, чтобы их было видно на светлом */
+  .nav {
+    width: 40px;
+    height: 40px;
+    background: rgb(0 0 0 / 0.4);
+  }
+
+  .previous {
+    left: calc(8px + var(--safe-area-left));
+  }
+
+  .next {
+    right: calc(8px + var(--safe-area-right));
+  }
+}
+
+@keyframes viewer-enter {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}

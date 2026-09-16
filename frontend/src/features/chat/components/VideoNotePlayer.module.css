@@ -1,0 +1,65 @@
+.player {
+  position: relative;
+  display: block;
+  width: min(240px, 60vw);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--color-bubble-in);
+  box-shadow: var(--shadow-sm);
+}
+
+.player:focus-visible {
+  outline-offset: 3px;
+}
+
+/* Видео вне потока: вертикальный кадр с мобильной камеры не растягивает кружок сквозь aspect-ratio */
+.video {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* Кольцо лежит по краю видео, а не снаружи — кружок не шире соседних сообщений */
+.ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  color: var(--color-accent);
+}
+
+.center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: rgb(0 0 0 / 0.45);
+  color: #ffffff;
+}
+
+/* Длительность — в левом нижнем углу, симметрично времени отправки справа */
+.badge {
+  position: absolute;
+  left: 0;
+  bottom: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: var(--radius-full);
+  background: rgb(0 0 0 / 0.45);
+  color: #ffffff;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+}

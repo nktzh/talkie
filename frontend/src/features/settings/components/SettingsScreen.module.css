@@ -1,0 +1,60 @@
+.screen {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  background: var(--color-surface);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  padding: calc(12px + var(--safe-area-top)) 16px 12px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.back {
+  margin-left: -8px;
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.description {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+/* ===== Заглушка на время загрузки (SettingsScreenSkeleton) ===== */
+
+.skeletonTitle {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 3px 0;
+}
+
+.skeletonFields {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.skeletonField {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 20px 16px var(--tab-bar-space);
+}

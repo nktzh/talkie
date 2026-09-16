@@ -1,0 +1,36 @@
+.shell {
+  display: flex;
+  /* --app-height — видимая высота над экранной клавиатурой (VisualViewportHeight), нужна для iOS */
+  height: var(--app-height, 100dvh);
+  /* В ландшафте вырез и скругления экрана приходятся на бока — контент их обходит */
+  padding-inline: var(--safe-area-left) var(--safe-area-right);
+  overflow: hidden;
+  background: var(--color-bg);
+}
+
+.main {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+}
+
+.tabBar {
+  display: none;
+}
+
+@media (--mobile) {
+  .tabBar {
+    display: block;
+  }
+
+  /* Открытый чат занимает весь экран: панель вкладок уступает место полю ввода */
+  .shell:has([data-chat-open]) .tabBar {
+    display: none;
+  }
+
+  /* Обязательная проверка: в списке чатов (любая папка) панель вкладок видна всегда.
+     Правило стоит после скрывающего и с той же специфичностью — поэтому побеждает */
+  .shell:has([data-chat-list]) .tabBar {
+    display: block;
+  }
+}

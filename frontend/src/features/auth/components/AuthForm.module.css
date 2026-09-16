@@ -1,0 +1,23 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  animation: enter var(--duration-base) var(--ease-out);
+}
+
+.submit {
+  width: 100%;
+  margin-top: 8px;
+}
+
+@keyframes enter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}

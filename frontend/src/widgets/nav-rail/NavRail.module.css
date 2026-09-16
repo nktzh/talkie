@@ -1,0 +1,124 @@
+.rail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: var(--nav-rail-width);
+  height: 100%;
+  flex-shrink: 0;
+  padding: calc(14px + var(--safe-area-top)) 6px calc(16px + var(--safe-area-bottom));
+  background: var(--color-bg);
+  border-right: 1px solid var(--color-border);
+}
+
+.logo {
+  margin-bottom: 6px;
+}
+
+/* Тусклая линия между верхними кнопками и папками чатов */
+.divider {
+  width: 40px;
+  height: 1px;
+  margin: 2px 0 4px;
+  border: 0;
+  background: var(--color-border-strong);
+}
+
+.folders {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  scrollbar-width: none;
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  padding: 4px 0;
+  border-radius: var(--radius-md);
+  color: var(--color-text-secondary);
+  transition: color var(--duration-fast);
+}
+
+.item:hover {
+  color: var(--color-text);
+}
+
+.itemIcon {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  transition: background-color var(--duration-fast);
+}
+
+.item:hover .itemIcon {
+  background: var(--color-surface-hover);
+}
+
+.active,
+.active:hover {
+  color: var(--color-accent-text);
+}
+
+.active .itemIcon,
+.active:hover .itemIcon {
+  background: var(--color-accent-soft);
+}
+
+.itemLabel {
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.active .itemLabel {
+  font-weight: 600;
+}
+
+.badge {
+  position: absolute;
+  top: -5px;
+  right: 2px;
+  display: grid;
+  place-items: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: var(--radius-full);
+  background: var(--color-badge);
+  box-shadow: 0 0 0 2px var(--color-bg);
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.account {
+  display: inline-flex;
+  margin-top: 8px;
+}
+
+/* На мобильных навигация переезжает вниз — см. виджет tab-bar */
+@media (--mobile) {
+  .rail {
+    display: none;
+  }
+}

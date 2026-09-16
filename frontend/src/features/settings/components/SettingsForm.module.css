@@ -1,0 +1,41 @@
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.actions {
+  display: flex;
+  padding-top: 4px;
+}
+
+.submit {
+  width: 100%;
+}
+
+/* Шапка учётной записи — такая же, как на вкладке «Аккаунт» на мобильных */
+.profileHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 0 16px;
+}
+
+.profileName {
+  margin-top: 8px;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.profileMeta {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}

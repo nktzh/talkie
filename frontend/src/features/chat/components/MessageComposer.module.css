@@ -1,0 +1,357 @@
+.composer {
+  position: relative;
+  width: 100%;
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+  /* Снизу — ещё и полоса «домой»; пока открыта клавиатура, --safe-area-bottom равен 0 */
+  padding: 8px 16px calc(16px + var(--safe-area-bottom));
+}
+
+/*
+ * ===== Карточка: вложения и строка ввода — единая панель из жидкого стекла =====
+ * Скругление задаёт LiquidGlass: когда панель растёт (многострочный текст, вложения),
+ * капсула становится скруглённым прямоугольником и содержимое не вылезает за дугу.
+ * Рамки и подсветки при фокусе нет — контур рисует само стекло.
+ */
+
+.card {
+  /* Подвал чата прозрачен для событий, панель их принимает */
+  pointer-events: auto;
+  transition: border-radius var(--duration-base) var(--ease-out);
+}
+
+/*
+ * ===== Появление панели форматирования =====
+ * Высота раскрывается через grid-template-rows 0fr → 1fr — так анимируется высота «по содержимому».
+ * Пока панель закрыта или раскрывается, лишнее обрезается; раскрытой — нет, иначе
+ * обрезались бы всплывающие меню заголовков и таблицы. Поэтому overflow переключается
+ * без задержки при закрытии и только в конце анимации при открытии.
+ */
+
+.toolbarSlot {
+  display: grid;
+  grid-template-rows: 0fr;
+  overflow: clip;
+  opacity: 0;
+  transition:
+    grid-template-rows var(--duration-base) var(--ease-out),
+    opacity var(--duration-fast) var(--ease-out),
+    overflow 0s allow-discrete;
+}
+
+.toolbarSlot[data-open] {
+  grid-template-rows: 1fr;
+  overflow: visible;
+  opacity: 1;
+  transition:
+    grid-template-rows var(--duration-base) var(--ease-out),
+    opacity var(--duration-base) var(--ease-out) 60ms,
+    overflow 0s var(--duration-base) allow-discrete;
+}
+
+.toolbarSlotInner {
+  min-height: 0;
+  transform: translateY(-6px);
+  transition: transform var(--duration-base) var(--ease-out);
+}
+
+.toolbarSlot[data-open] .toolbarSlotInner {
+  transform: none;
+}
+
+.row {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  padding: 4px;
+}
+
+.row .attach {
+  width: 40px;
+  height: 40px;
+  margin: 2px;
+}
+
+.row .attach:hover {
+  color: var(--color-accent-text);
+}
+
+.input {
+  flex: 1;
+  min-width: 0;
+  min-height: 44px;
+  max-height: 220px;
+  padding: 11px 6px;
+  border: 0;
+  background: transparent;
+  resize: none;
+  font-size: 15px;
+  line-height: 1.45;
+  /* Автовысота по содержимому; в Safari и Firefox её выставляет useTextareaAutosize */
+  field-sizing: content;
+  /* Поле плавно вырастает при входе в режим markdown и сжимается при выходе */
+  transition:
+    min-height var(--duration-base) var(--ease-out),
+    padding-top var(--duration-base) var(--ease-out);
+}
+
+/* Меньше 16px — iOS приближает страницу при фокусе */
+@media (pointer: coarse) {
+  .input {
+    font-size: 16px;
+  }
+}
+
+.inputMarkdown {
+  min-height: 132px;
+  max-height: 320px;
+  padding-top: 8px;
+}
+
+.input:focus-visible {
+  outline: none;
+}
+
+.input::placeholder {
+  color: var(--color-text-tertiary);
+}
+
+/* ===== Предпросмотр markdown ===== */
+
+.preview {
+  flex: 1;
+  min-width: 0;
+  min-height: 132px;
+  max-height: 320px;
+  padding: 8px 6px 11px;
+  overflow-y: auto;
+}
+
+.previewEmpty {
+  color: var(--color-text-tertiary);
+}
+
+/* ===== Переключатель markdown ===== */
+
+.row .markdownToggle {
+  width: 40px;
+  height: 40px;
+  margin: 2px;
+}
+
+.row .markdownToggle:hover {
+  color: var(--color-accent-text);
+}
+
+.row .markdownToggleActive {
+  background: var(--color-accent-soft);
+  color: var(--color-accent-text);
+}
+
+/* ===== Кнопка действия: микрофон ⇄ камера → отправка ===== */
+
+.action {
+  --voice-level: 0;
+
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  margin: 2px;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--color-text-secondary);
+  /* Удержание и свайпы — наши жесты: браузер не прокручивает страницу и не выделяет текст */
+  touch-action: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  transition:
+    background-color var(--duration-base) var(--ease-out),
+    color var(--duration-base) var(--ease-out),
+    box-shadow 120ms linear,
+    transform var(--duration-fast);
+}
+
+.action:active:not(:disabled) {
+  transform: scale(0.92);
+}
+
+/* Пока кнопку удерживают, она подрастает под пальцем */
+.action[data-holding],
+.action[data-holding]:active:not(:disabled) {
+  transform: scale(1.18);
+}
+
+/* В режиме markdown кнопка отправки видна всегда, но ждёт текста */
+.action:disabled {
+  opacity: 0.45;
+}
+
+.action[data-mode="record"]:hover {
+  background: var(--color-menu-item-hover);
+  color: var(--color-accent-text);
+}
+
+.action[data-mode="send"],
+.action[data-mode="send-recording"] {
+  background: var(--color-accent);
+  color: var(--color-text-on-accent);
+}
+
+.action[data-mode="send"]:hover:not(:disabled),
+.action[data-mode="send-recording"]:hover {
+  background: var(--color-accent-hover);
+}
+
+/* Во время записи кнопку окружает ореол, который дышит в такт голосу */
+.action[data-mode="send-recording"] {
+  box-shadow: 0 0 0 calc(3px + var(--voice-level) * 9px) color-mix(in srgb, var(--color-accent) 22%, transparent);
+}
+
+.action[aria-busy="true"] {
+  animation: waiting 1s ease-in-out infinite;
+}
+
+.micIcon,
+.videoIcon,
+.sendIcon {
+  grid-area: 1 / 1;
+  transition:
+    opacity var(--duration-base) var(--ease-out),
+    transform var(--duration-base) var(--ease-out);
+}
+
+/* По умолчанию все иконки спрятаны; видна только та, что соответствует режиму */
+.micIcon,
+.videoIcon {
+  opacity: 0;
+  transform: scale(0.4) rotate(60deg);
+}
+
+.sendIcon {
+  opacity: 0;
+  transform: scale(0.4) rotate(-60deg);
+}
+
+.action[data-mode="record"][data-kind="voice"] .micIcon,
+.action[data-mode="record"][data-kind="video"] .videoIcon,
+.action:not([data-mode="record"]) .sendIcon {
+  opacity: 1;
+  transform: none;
+}
+
+/* Микрофон и камера сменяют друг друга поворотом, как две стороны одной кнопки */
+.action[data-kind="voice"] .videoIcon,
+.action[data-kind="video"] .micIcon {
+  transform: scale(0.4) rotate(-60deg);
+}
+
+/* ===== Подсказка закрепления над кнопкой ===== */
+
+.lockHint {
+  --lock-progress: 0;
+
+  position: absolute;
+  right: 22px;
+  /* Отступ снизу + высота панели + зазор */
+  bottom: calc(76px + var(--safe-area-bottom));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 40px;
+  padding: 10px 0 8px;
+  border-radius: var(--radius-full);
+  background: var(--color-bubble-in);
+  box-shadow: var(--shadow-md);
+  color: var(--color-text-secondary);
+  transform: translateY(calc(var(--lock-progress) * -16px));
+  animation: slide-up var(--duration-base) var(--ease-out);
+}
+
+.lockArrow {
+  color: var(--color-accent-text);
+  animation: lock-nudge 1.4s ease-in-out infinite;
+}
+
+@keyframes lock-nudge {
+  0%,
+  100% {
+    translate: 0 2px;
+  }
+
+  50% {
+    translate: 0 -3px;
+  }
+}
+
+/* ===== Сообщение об ошибке над панелью ===== */
+
+.alert {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  padding: 6px 6px 6px 12px;
+  border-radius: 14px;
+  background: var(--color-danger-soft);
+  color: var(--color-danger);
+  font-size: 13.5px;
+  pointer-events: auto;
+  animation: slide-up var(--duration-base) var(--ease-out);
+}
+
+.alertText {
+  flex: 1;
+  min-width: 0;
+}
+
+.alertDismiss {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  transition: background-color var(--duration-fast);
+}
+
+.alertDismiss:hover {
+  background: color-mix(in srgb, var(--color-danger) 14%, transparent);
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes waiting {
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@media (--mobile) {
+  .composer {
+    padding: 6px 8px calc(10px + var(--safe-area-bottom));
+  }
+
+  .lockHint {
+    right: 14px;
+    bottom: calc(70px + var(--safe-area-bottom));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lockArrow {
+    animation: none;
+  }
+}

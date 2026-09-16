@@ -1,0 +1,110 @@
+.panel {
+  display: flex;
+  flex-direction: column;
+  padding: 16px 12px 12px;
+}
+
+.header {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 4px 8px 12px;
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 12px;
+  border-radius: var(--radius-md);
+  text-align: left;
+  transition: background-color var(--duration-fast);
+}
+
+.option:hover:not(:disabled) {
+  background: var(--color-surface-hover);
+}
+
+.option:disabled {
+  opacity: 0.55;
+}
+
+.optionIcon {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  border-radius: var(--radius-md);
+  background: var(--color-accent-soft);
+  color: var(--color-accent-text);
+}
+
+.optionText {
+  flex: 1;
+  min-width: 0;
+}
+
+.optionTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.soon {
+  padding: 1px 8px;
+  border-radius: var(--radius-full);
+  background: var(--color-surface-hover);
+  border: 1px solid var(--color-border);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-text-tertiary);
+}
+
+.optionDescription {
+  display: block;
+  font-size: 13px;
+  line-height: 1.35;
+  color: var(--color-text-secondary);
+}
+
+.chevron {
+  color: var(--color-text-tertiary);
+}
+
+.chevronHidden {
+  visibility: hidden;
+}
+
+@media (--mobile) {
+  .panel {
+    padding: 16px 8px 16px;
+  }
+
+  .optionDescription {
+    /* На мобильных у строк меньше места — описание в одну строку */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}

@@ -1,0 +1,65 @@
+/* Цвета приходят из пузыря через --bubble-*: во входящих и исходящих они разные */
+.player {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 240px;
+  max-width: 320px;
+}
+
+.toggle {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--bubble-accent);
+  color: var(--bubble-accent-contrast);
+  transition:
+    opacity var(--duration-fast),
+    transform var(--duration-fast);
+}
+
+.toggle:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.toggle:active:not(:disabled) {
+  transform: scale(0.94);
+}
+
+.toggle:disabled {
+  opacity: 0.5;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 14.5px;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+/* Полоса без собственных отступов по высоте: строки карточки стоят плотно, как у файла */
+.seek {
+  --seek-track: var(--bubble-track);
+  --seek-fill: var(--bubble-accent);
+
+  height: 12px;
+}
+
+.details {
+  font-size: 12.5px;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.3;
+  color: var(--bubble-muted);
+}

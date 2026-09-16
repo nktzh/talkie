@@ -1,0 +1,14 @@
+.ring {
+  display: block;
+  /* Начало кольца — сверху */
+  rotate: -90deg;
+  pointer-events: none;
+}
+
+.track {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 3;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 120ms linear;
+}

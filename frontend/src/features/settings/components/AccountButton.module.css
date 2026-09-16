@@ -1,0 +1,9 @@
+.button {
+  display: inline-flex;
+  border-radius: 50%;
+  transition: opacity var(--duration-fast);
+}
+
+.button:hover {
+  opacity: 0.85;
+}

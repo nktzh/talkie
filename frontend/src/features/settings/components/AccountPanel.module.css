@@ -1,0 +1,118 @@
+.panel {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: calc(24px + var(--safe-area-top)) 16px var(--tab-bar-space);
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 0 16px;
+}
+
+.name {
+  margin-top: 8px;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.username {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+/* Имя в заглушке (AccountPanelSkeleton) стоит там же, где настоящее */
+.skeletonName {
+  margin: 8px 0 4px;
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+}
+
+.group > li + li {
+  border-top: 1px solid var(--color-border);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  min-height: 56px;
+  padding: 10px 14px;
+  text-align: left;
+  transition: background-color var(--duration-fast);
+}
+
+.row:hover,
+.row:active {
+  background: var(--color-surface-hover);
+}
+
+/* Строка с переключателем темы кликабельна только по самому переключателю */
+li.row:hover {
+  background: none;
+}
+
+.rowIcon {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  border-radius: var(--radius-sm);
+  background: var(--color-accent-soft);
+  color: var(--color-accent-text);
+}
+
+.rowText {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.rowLabel {
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.rowDescription {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+.chevron {
+  flex-shrink: 0;
+  color: var(--color-text-tertiary);
+}
+
+.themeToggle {
+  flex-shrink: 0;
+  margin-right: -8px;
+}
+
+.danger {
+  color: var(--color-danger);
+}
+
+.danger .rowIcon {
+  background: var(--color-danger-soft);
+  color: var(--color-danger);
+}

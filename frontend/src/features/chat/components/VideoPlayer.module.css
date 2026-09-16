@@ -1,0 +1,144 @@
+/*
+ * Плеер вписывается в сцену просмотрщика в пропорциях видео: сцена — size-контейнер,
+ * поэтому ширину можно посчитать от её высоты. Пропорции известны заранее — при загрузке ничего не прыгает
+ */
+.player {
+  position: relative;
+  width: min(100cqw, 100cqh * var(--media-ratio));
+  aspect-ratio: var(--media-ratio);
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  background: #000000;
+  color: #ffffff;
+}
+
+.player[data-fullscreen] {
+  width: 100vw;
+  height: 100vh;
+  aspect-ratio: auto;
+  border-radius: 0;
+}
+
+.player[data-idle] {
+  cursor: none;
+}
+
+.video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: rgb(0 0 0 / 0.5);
+  pointer-events: none;
+}
+
+.error {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(320px, 80%);
+  translate: -50% -50%;
+  font-size: 14px;
+  line-height: 1.4;
+  text-align: center;
+  color: rgb(255 255 255 / 0.85);
+}
+
+/* ===== Панель управления поверх нижнего края ===== */
+
+.controls {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 24px 12px 6px;
+  background: linear-gradient(to top, rgb(0 0 0 / 0.65), transparent);
+  transition: opacity var(--duration-base);
+}
+
+/* На весь экран панель лежит у края дисплея — обходит полосу «домой» и боковые вырезы */
+.player[data-fullscreen] .controls {
+  padding: 24px calc(12px + var(--safe-area-right)) calc(6px + var(--safe-area-bottom))
+    calc(12px + var(--safe-area-left));
+}
+
+/* Панель не прячется, пока на ней курсор или фокус с клавиатуры */
+.player[data-idle] .controls:not(:hover, :focus-within) {
+  opacity: 0;
+}
+
+.seek,
+.volume {
+  --seek-track: rgb(255 255 255 / 0.3);
+  --seek-fill: #ffffff;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.button {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  color: inherit;
+  transition: background-color var(--duration-fast);
+}
+
+.button:hover:not(:disabled) {
+  background: rgb(255 255 255 / 0.15);
+}
+
+.button:disabled {
+  opacity: 0.5;
+}
+
+.time {
+  margin-right: auto;
+  padding-left: 4px;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.volumeGroup {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.volume {
+  width: 72px;
+  margin-right: 8px;
+}
+
+/* На телефоне просмотрщик без боковых отступов — видео во всю ширину экрана, скругления упирались бы в его края */
+@media (--mobile) {
+  .player {
+    border-radius: 0;
+  }
+}
+
+/* На тач-экранах громкость — кнопками телефона */
+@media (hover: none) {
+  .volume {
+    display: none;
+  }
+}

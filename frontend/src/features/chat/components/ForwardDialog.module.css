@@ -1,0 +1,120 @@
+/* Высота постоянная: при поиске список не должен дёргать окно вверх-вниз */
+.dialog {
+  height: min(620px, calc(100dvh - 32px));
+}
+
+.panel {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.header {
+  display: flex;
+  flex-shrink: 0;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 18px 16px 14px 24px;
+}
+
+.heading {
+  flex: 1;
+  min-width: 0;
+  padding-top: 4px;
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.description {
+  margin-top: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+.footer {
+  display: flex;
+  flex-shrink: 0;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 20px 20px;
+  border-top: 1px solid var(--color-border);
+}
+
+.comment {
+  width: 100%;
+  height: 44px;
+  padding: 0 14px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-input-bg);
+  font-size: 15px;
+  animation: comment-enter var(--duration-base) var(--ease-out);
+  transition:
+    border-color var(--duration-fast),
+    background-color var(--duration-fast);
+}
+
+/* Меньше 16px — iOS приближает страницу при фокусе */
+@media (pointer: coarse) {
+  .comment {
+    font-size: 16px;
+  }
+}
+
+.comment:focus-visible {
+  border-color: var(--color-accent);
+  background: var(--color-input-bg-focus);
+  outline: none;
+}
+
+.comment::placeholder {
+  color: var(--color-text-tertiary);
+}
+
+.submit {
+  width: 100%;
+}
+
+/* Длинное название чата не раздвигает кнопку */
+.submitLabel {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@keyframes comment-enter {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+
+/* На телефоне окно — лист снизу: занимает всю высоту, которую ему оставляет Modal */
+@media (--mobile) {
+  dialog.dialog {
+    height: 92dvh;
+  }
+
+  .header {
+    padding-left: 20px;
+  }
+
+  .footer {
+    padding: 10px 16px 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .comment {
+    animation: none;
+  }
+}

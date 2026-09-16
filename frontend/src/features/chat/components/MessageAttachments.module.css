@@ -1,0 +1,157 @@
+.gallery {
+  position: relative;
+  overflow: hidden;
+  border-radius: 15px;
+}
+
+.single {
+  width: calc(360px * var(--media-ratio));
+  min-width: 180px;
+  max-width: 100%;
+  max-height: 360px;
+  aspect-ratio: var(--media-ratio);
+}
+
+.single .cell {
+  height: 100%;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2px;
+  /*
+   * Ширина — от пузыря, а не от окна: в узкой колонке чата пузырь ограничен процентом ширины ленты,
+   * и сетка в 70vw вылезала за его край. max-width в процентах не мешает пузырю вырасти до 420px.
+   */
+  width: 420px;
+  max-width: 100%;
+}
+
+.cell {
+  position: relative;
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  background: var(--color-input-bg);
+  cursor: zoom-in;
+}
+
+.grid .cell {
+  aspect-ratio: 1;
+}
+
+.grid .wide {
+  grid-column: span 2;
+  aspect-ratio: 2;
+}
+
+.cell:focus-visible {
+  outline-offset: -3px;
+}
+
+.image {
+  object-fit: cover;
+  transition: transform var(--duration-base) var(--ease-out);
+}
+
+.cell:hover .image {
+  transform: scale(1.02);
+}
+
+/* У <video> нет режима fill, как у next/image, — растягиваем кадр на всю ячейку сами */
+.videoFrame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* У видео курсор обычный: клик запускает воспроизведение, а не увеличивает картинку */
+.cell:has(.play) {
+  cursor: pointer;
+}
+
+.play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: rgb(0 0 0 / 0.45);
+  color: #ffffff;
+  backdrop-filter: blur(4px);
+  transition: background-color var(--duration-fast);
+}
+
+.cell:hover .play {
+  background: rgb(0 0 0 / 0.6);
+}
+
+/* Длительность — в левом нижнем углу, симметрично времени отправки справа */
+.duration {
+  position: absolute;
+  left: 6px;
+  bottom: 6px;
+  padding: 4px 8px;
+  border-radius: var(--radius-full);
+  background: rgb(0 0 0 / 0.45);
+  color: #ffffff;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+/* Цвета приходят из пузыря через --bubble-*: во входящих и исходящих они разные */
+.files {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 220px;
+  max-width: 320px;
+}
+
+.fileCard {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: var(--radius-sm);
+}
+
+.fileCard:hover .fileName {
+  text-decoration: underline;
+}
+
+.fileIcon {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--bubble-accent);
+  color: var(--bubble-accent-contrast);
+}
+
+.fileInfo {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.fileName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 14.5px;
+  font-weight: 500;
+}
+
+.fileSize {
+  font-size: 12.5px;
+  color: var(--bubble-muted);
+}

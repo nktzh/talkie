@@ -1,0 +1,203 @@
+/*
+ * Все кнопки, включая «Просмотр», — одной лентой, которая начинается там же, где текст сообщения.
+ * На узких экранах они переносятся на вторую строку, а не уезжают в прокрутку:
+ * контейнер с overflow обрезал бы всплывающие меню заголовков и таблицы.
+ */
+.toolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  row-gap: 2px;
+  /*
+   * Лента повторяет границы текста в поле ввода (MessageComposer): слева перед ним 56px —
+   * отступ строки и «Прикрепить», справа после него 102px — markdown и «Отправить».
+   * Слева вычитаем 7px между краем кнопки и иконкой, справа 11px между краем «Просмотра»
+   * и подписью — с границами текста совпадают сами значки и подпись, а не рамки кнопок.
+   */
+  padding: 4px 91px 4px 49px;
+}
+
+/* Обёртка не участвует в раскладке: группы переносятся вместе с «Просмотром» как одна лента */
+.tools {
+  display: contents;
+}
+
+.group {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+/* Группы кнопок разделяем тонкой чертой */
+.group::before {
+  content: "";
+  width: 1px;
+  height: 18px;
+  margin: 0 5px;
+  background: var(--color-border);
+}
+
+.tool {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-secondary);
+  transition:
+    background-color var(--duration-fast),
+    color var(--duration-fast);
+}
+
+.tool:hover:not(:disabled) {
+  background: var(--color-menu-item-hover);
+  color: var(--color-text);
+}
+
+.tool:disabled {
+  opacity: 0.4;
+}
+
+.toolActive {
+  background: var(--color-accent-soft);
+  color: var(--color-accent-text);
+}
+
+.menu {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.popover {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 0;
+  z-index: 10;
+  border-radius: var(--radius-md);
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-lg);
+  animation: popover-in var(--duration-fast) var(--ease-out);
+}
+
+@keyframes popover-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+
+/* ===== Меню заголовков ===== */
+
+.headingMenu {
+  display: flex;
+  flex-direction: column;
+  padding: 6px;
+  min-width: 176px;
+}
+
+.headingItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  text-align: left;
+  color: var(--color-text);
+  transition: background-color var(--duration-fast);
+}
+
+.headingItem:hover {
+  background: var(--color-surface-hover);
+}
+
+/* ===== Переключатель предпросмотра ===== */
+
+.preview {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  height: 32px;
+  /* Прижат к концу строки, в том числе когда переносится вместе с кнопками на вторую строку */
+  margin-left: auto;
+  padding: 0 11px 0 9px;
+  border-radius: var(--radius-sm);
+  font-size: 13.5px;
+  color: var(--color-text-secondary);
+  transition:
+    background-color var(--duration-fast),
+    color var(--duration-fast);
+}
+
+.preview:hover {
+  background: var(--color-menu-item-hover);
+  color: var(--color-text);
+}
+
+.previewActive {
+  background: var(--color-accent-soft);
+  color: var(--color-accent-text);
+}
+
+.previewActive:hover {
+  background: var(--color-accent-soft);
+  color: var(--color-accent-text);
+}
+
+@media (--mobile) {
+  .previewLabel {
+    display: none;
+  }
+
+  .preview {
+    padding: 0;
+    width: 32px;
+    justify-content: center;
+  }
+
+  /* На телефоне ширина текста слишком мала для ленты кнопок — отдаём ей всю карточку и центрируем */
+  .toolbar {
+    justify-content: center;
+    padding: 4px;
+  }
+
+  /*
+   * Ленту делим на две строки сами, а не ждём переноса: иначе вторая строка начиналась бы
+   * с черты-разделителя и съезжала от центра. Разрыв — псевдоэлемент обёртки
+   * (при display: contents он встаёт в общий ряд), а через order за него уходят
+   * списки со ссылкой, таблица и «Просмотр».
+   */
+  .tools::after {
+    content: "";
+    flex-basis: 100%;
+    order: 1;
+  }
+
+  .tools > :nth-child(n + 4),
+  .preview {
+    order: 2;
+  }
+
+  .tools > .group:nth-child(4)::before {
+    display: none;
+  }
+
+  /* «Просмотр» встаёт рядом с кнопками, а отделяет его такая же черта, как между группами */
+  .preview {
+    position: relative;
+    margin-left: 11px;
+  }
+
+  .preview::before {
+    content: "";
+    position: absolute;
+    top: 7px;
+    left: -6px;
+    width: 1px;
+    height: 18px;
+    background: var(--color-border);
+  }
+}

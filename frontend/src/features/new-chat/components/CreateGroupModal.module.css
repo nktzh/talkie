@@ -1,0 +1,72 @@
+.access {
+  border: 0;
+}
+
+.legend {
+  margin-bottom: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
+
+.options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.option {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 12px;
+  border-radius: var(--radius-md);
+  background: var(--color-input-bg);
+  border: 1.5px solid transparent;
+  cursor: pointer;
+  transition:
+    border-color var(--duration-fast),
+    background-color var(--duration-fast);
+}
+
+.option:hover {
+  border-color: var(--color-border-strong);
+}
+
+.option:has(:focus-visible) {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 4px var(--color-focus-ring);
+}
+
+.selected,
+.selected:hover {
+  background: var(--color-accent-soft);
+  border-color: var(--color-accent);
+}
+
+.optionIcon {
+  margin-bottom: 4px;
+  color: var(--color-text-tertiary);
+}
+
+.selected .optionIcon {
+  color: var(--color-accent-text);
+}
+
+.optionTitle {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.optionDescription {
+  font-size: 12px;
+  line-height: 1.35;
+  color: var(--color-text-secondary);
+}
+
+/* На узком экране карточки типа группы становятся строками */
+@media (max-width: 400px) {
+  .options {
+    grid-template-columns: 1fr;
+  }
+}

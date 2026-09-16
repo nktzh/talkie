@@ -1,0 +1,23 @@
+.iconButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border-radius: var(--radius-full);
+  color: var(--color-text-secondary);
+  transition:
+    background-color var(--duration-fast),
+    color var(--duration-fast);
+}
+
+.iconButton:hover {
+  background: var(--color-surface-hover);
+  color: var(--color-text);
+}
+
+/* IconLink — ссылка, но выглядит как кнопка, поэтому тоже без обводки */
+.iconButton:focus-visible {
+  outline: none;
+}

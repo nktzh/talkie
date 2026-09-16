@@ -1,0 +1,134 @@
+.sidebar {
+  /* До первого замера — высота шапки с заголовком и поиском, чтобы первый чат не прятался под ней */
+  --chat-list-header-height: 94px;
+  /* Отступ шапки над заголовком и под поиском — в замер не входит, список учитывает его сам.
+     Сверху к нему добавляется строка состояния, если страница заходит под неё */
+  --chat-list-header-inset: calc(28px + var(--safe-area-top));
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+/*
+ * Шапка лежит поверх списка, как нижняя панель чата — только градиент идёт сверху вниз.
+ * Градиент — фон самой шапки: он рисуется под слоями стекла с отрицательным z-index
+ * и не затемняет их. Нижний padding продлевает градиент под поиском, но в замер высоты не входит.
+ */
+.header {
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: calc(18px + var(--safe-area-top)) 16px 32px;
+  background: linear-gradient(
+    to bottom,
+    var(--color-surface) 0%,
+    color-mix(in srgb, var(--color-surface) 85%, transparent) 30%,
+    color-mix(in srgb, var(--color-surface) 40%, transparent) 65%,
+    transparent 100%
+  );
+  /* Прозрачные места пропускают прокрутку и клики к списку; заголовок и поиск включают события сами */
+  pointer-events: none;
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  /* Справа отступ меньше: кнопка выравнивается по своей иконке, а не по границе */
+  padding: 0 0 0 4px;
+  pointer-events: auto;
+}
+
+/* На десктопе знак бренда живёт в навигационной панели — дублировать не нужно */
+.logo {
+  display: none;
+  flex-shrink: 0;
+}
+
+.title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+/* Список начинается под шапкой, но прокручивается под неё */
+.list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: calc(var(--chat-list-header-inset) + var(--chat-list-header-height) + 2px) 8px 12px;
+  /* Чат, до которого дошли с клавиатуры, не прячется под шапкой */
+  scroll-padding-top: calc(var(--chat-list-header-inset) + var(--chat-list-header-height));
+}
+
+.empty {
+  padding: calc(var(--chat-list-header-inset) + var(--chat-list-header-height) + 32px) 24px 32px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+.comingSoon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: calc(var(--chat-list-header-inset) + var(--chat-list-header-height) + 48px) 24px 48px;
+  text-align: center;
+}
+
+.comingSoonIcon {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  margin-bottom: 8px;
+  border-radius: 50%;
+  background: var(--color-surface);
+  box-shadow: var(--shadow-md);
+  color: var(--color-accent-text);
+}
+
+.comingSoonTitle {
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.comingSoonDescription {
+  max-width: 280px;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+/* Место под плавающую панель вкладок */
+@media (--mobile) {
+  /* Под поиском ещё строка папок */
+  .sidebar {
+    --chat-list-header-height: 144px;
+  }
+
+  .list {
+    padding-bottom: var(--tab-bar-space);
+  }
+
+  .logo {
+    display: block;
+  }
+}

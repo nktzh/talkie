@@ -1,0 +1,102 @@
+.chat {
+  position: relative;
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  background: var(--color-chat-bg);
+}
+
+.conversation {
+  /* До первого замера — высота однострочного поля ввода, чтобы последнее сообщение не пряталось под ним */
+  --chat-footer-height: 78px;
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+}
+
+/*
+ * Нижняя панель лежит поверх ленты: сообщения уходят под стекло и тонут в градиенте.
+ * Градиент — фон самой панели, а не псевдоэлемент: фон рисуется под слоями стекла
+ * с отрицательным z-index и не затемняет их. Верхний padding продлевает градиент
+ * выше панели, но в замер высоты не входит.
+ */
+.footer {
+  position: absolute;
+  z-index: 2;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding-top: 32px;
+  background: linear-gradient(
+    to top,
+    var(--color-chat-bg) 0%,
+    color-mix(in srgb, var(--color-chat-bg) 85%, transparent) 30%,
+    color-mix(in srgb, var(--color-chat-bg) 40%, transparent) 65%,
+    transparent 100%
+  );
+  /* Прозрачные края пропускают прокрутку и клики к ленте; панели включают события сами */
+  pointer-events: none;
+}
+
+.footer:empty {
+  display: none;
+}
+
+/*
+ * Подтверждение пересылки — плашка над полем ввода. Вне потока: панель меряют,
+ * чтобы сделать ленте отступ, и плашка на три секунды не должна сдвигать сообщения
+ */
+.notice {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% - 24px);
+  left: 0;
+  width: fit-content;
+  max-width: calc(100% - 32px);
+  margin: 0 auto;
+  padding: 8px 14px;
+  border-radius: var(--radius-full);
+  background: var(--color-surface-raised);
+  box-shadow: var(--shadow-md);
+  color: var(--color-text);
+  font-size: 13.5px;
+  font-weight: 500;
+  animation: notice-enter var(--duration-base) var(--ease-out);
+}
+
+@keyframes notice-enter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .notice {
+    animation: none;
+  }
+}
+
+.dropOverlay {
+  position: absolute;
+  inset: 12px;
+  z-index: 7;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  border: 2px dashed var(--color-accent);
+  border-radius: var(--radius-xl);
+  background: color-mix(in srgb, var(--color-chat-bg) 90%, transparent);
+  color: var(--color-accent-text);
+  font-size: 16px;
+  font-weight: 600;
+  /* Не перехватываем события перетаскивания у ленты */
+  pointer-events: none;
+}

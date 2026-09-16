@@ -1,0 +1,110 @@
+.dialog {
+  margin: auto;
+  padding: 0;
+  width: calc(100vw - 32px);
+  max-height: calc(100dvh - 32px);
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  background: var(--color-surface);
+  color: var(--color-text);
+  box-shadow: var(--shadow-lg);
+}
+
+.dialog[open] {
+  animation: dialog-enter var(--duration-base) var(--ease-out);
+}
+
+/* ::backdrop не во всех браузерах наследует переменные, поэтому цвет задан явно */
+.dialog::backdrop {
+  background: rgb(0 0 0 / 0.55);
+}
+
+.dialog[open]::backdrop {
+  animation: backdrop-enter var(--duration-base) ease;
+}
+
+.md {
+  max-width: 420px;
+}
+
+.sheet {
+  max-width: 440px;
+}
+
+/*
+ * Флекс-колонка, чтобы на низком экране содержимое сжималось и прокручивалось внутри.
+ * display задаём только открытому окну: иначе правило перебивает браузерное
+ * dialog:not([open]) { display: none }, и закрытое окно рисует рамку тонкой полосой.
+ */
+.sheet[open] {
+  display: flex;
+  flex-direction: column;
+}
+
+.lg {
+  max-width: 880px;
+  height: min(640px, calc(100dvh - 32px));
+}
+
+/* Селекторы с dialog — чтобы перебить .dialog и .dialog[open] из базовых правил */
+@media (--mobile) {
+  dialog.sheet {
+    margin: auto auto 0;
+    width: 100vw;
+    max-width: none;
+    max-height: 92dvh;
+    padding: 0 var(--safe-area-right) var(--safe-area-bottom) var(--safe-area-left);
+    border-bottom: 0;
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  }
+
+  dialog.sheet[open] {
+    animation: sheet-enter var(--duration-base) var(--ease-out);
+  }
+}
+
+@media (--mobile) {
+  .lg {
+    width: 100vw;
+    max-width: none;
+    height: 100dvh;
+    max-height: 100dvh;
+    /* Окно во весь экран обходит строку состояния, вырезы и полосу «домой» */
+    padding: var(--safe-area-top) var(--safe-area-right) var(--safe-area-bottom) var(--safe-area-left);
+    border: 0;
+    border-radius: 0;
+  }
+}
+
+@keyframes dialog-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes sheet-enter {
+  from {
+    transform: translateY(100%);
+  }
+
+  to {
+    transform: none;
+  }
+}
+
+@keyframes backdrop-enter {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}

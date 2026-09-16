@@ -1,0 +1,75 @@
+.row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 8px;
+  border-radius: var(--radius-md);
+  text-align: left;
+  transition: background-color var(--duration-fast);
+}
+
+.row:hover {
+  background: var(--color-surface-hover);
+}
+
+.row:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--color-focus-ring);
+}
+
+.icon {
+  color: var(--color-text-tertiary);
+}
+
+.body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.label {
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.hint {
+  font-size: 12px;
+  color: var(--color-text-tertiary);
+}
+
+.error {
+  color: var(--color-danger);
+}
+
+/* Переключатель: дорожка и бегунок */
+.switch {
+  position: relative;
+  flex-shrink: 0;
+  width: 38px;
+  height: 22px;
+  border-radius: var(--radius-full);
+  background: var(--color-border-strong);
+  transition: background-color var(--duration-base) var(--ease-out);
+}
+
+.switch::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.2);
+  transition: translate var(--duration-base) var(--ease-out);
+}
+
+.on {
+  background: var(--color-accent);
+}
+
+.on::after {
+  translate: 16px 0;
+}

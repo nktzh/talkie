@@ -1,0 +1,4 @@
+.modal {
+  max-width: 460px;
+  height: min(620px, calc(100dvh - 32px));
+}
