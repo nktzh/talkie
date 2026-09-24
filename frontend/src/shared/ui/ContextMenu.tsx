@@ -37,6 +37,11 @@ export interface ContextMenuState<T> {
    * Фокус в меню не переводится — иначе на телефоне спряталась бы клавиатура и сдвинула ленту
    */
   isTouch?: boolean;
+  /**
+   * Меню кнопки, открытое обычным кликом: как и при долгом нажатии, встаёт у самой кнопки,
+   * но фокус, в отличие от касания, переходит на первый пункт
+   */
+  isAnchored?: boolean;
 }
 
 /**
@@ -66,17 +71,24 @@ export function useContextMenu<T>() {
     setMenu({ target, x, y, trigger });
   }
 
+  /** Меню кнопки: открывается левым кликом и работает одинаково на десктопе и на телефоне */
+  function openAtTrigger(event: MouseEvent<HTMLElement>, target: T) {
+    const trigger = event.currentTarget;
+    const { left, bottom, width } = trigger.getBoundingClientRect();
+    setMenu({ target, x: left + width / 2, y: bottom, trigger, isAnchored: true });
+  }
+
   /** Долгое нажатие (useLongPress): trigger — элемент, над которым встанет меню, x и y — точка касания */
   function openByLongPress(target: T, trigger: HTMLElement, x: number, y: number) {
     setMenu({ target, x, y, trigger, isTouch: true });
   }
 
-  return { menu, open, openByLongPress, close: () => setMenu(null) };
+  return { menu, open, openAtTrigger, openByLongPress, close: () => setMenu(null) };
 }
 
 interface ContextMenuProps {
   /** null — меню закрыто */
-  menu: Pick<ContextMenuState<unknown>, "x" | "y" | "trigger" | "isTouch"> | null;
+  menu: Pick<ContextMenuState<unknown>, "x" | "y" | "trigger" | "isTouch" | "isAnchored"> | null;
   onClose: () => void;
   /** Доступное имя меню */
   label: string;
@@ -86,12 +98,14 @@ interface ContextMenuProps {
 export function ContextMenu({ menu, onClose, label, children }: ContextMenuProps) {
   if (!menu) return null;
 
-  // Портал: лента сообщений прокручивается и обрезает содержимое, а стеклу нужен фон всего окна
+  // Портал: лента сообщений прокручивается и обрезает содержимое, а стеклу нужен фон всего окна.
+  // Меню, открытое в модальном окне, переносим в него же: всё за пределами окна браузер
+  // делает неинтерактивным, и пункты перестали бы нажиматься
   return createPortal(
     <ContextMenuPopup key={`${menu.x}:${menu.y}`} menu={menu} onClose={onClose} label={label}>
       {children}
     </ContextMenuPopup>,
-    document.body,
+    menu.trigger.closest("dialog") ?? document.body,
   );
 }
 
@@ -124,7 +138,7 @@ function ContextMenuPopup({ menu, onClose, label, children }: ContextMenuPopupPr
     if (!layer) return;
 
     // Элемент запоминаем при открытии: к моменту раскрытия палитры он мог сдвинуться вместе с лентой
-    const anchor = menu.isTouch ? menu.trigger.getBoundingClientRect() : null;
+    const anchor = menu.isTouch || menu.isAnchored ? menu.trigger.getBoundingClientRect() : null;
 
     function place(target: HTMLDivElement) {
       const { width, height } = target.getBoundingClientRect();
@@ -145,14 +159,23 @@ function ContextMenuPopup({ menu, onClose, label, children }: ContextMenuPopupPr
       target.style.top = `${Math.max(VIEWPORT_GAP, Math.min(y, maxY))}px`;
     }
 
+    // Верхний слой: меню, открытое внутри модального окна, иначе оказалось бы под ним.
+    // Показываем до расстановки — у спрятанного попровера нулевые размеры, и считать её не по чему
+    layer.togglePopover?.(true);
     place(layer);
     layer.style.visibility = "visible";
     if (!menu.isTouch) getContextMenuItems(listRef.current)[0]?.focus({ preventScroll: true });
 
-    const observer = new ResizeObserver(() => place(layer));
+    // Первый вызов наблюдателя приходит сразу после observe и повторяет уже сделанную расстановку:
+    // лишний раз считать раскладку при открытии меню как раз и незачем
+    let isPlaced = false;
+    const observer = new ResizeObserver(() => {
+      if (isPlaced) place(layer);
+      isPlaced = true;
+    });
     observer.observe(layer);
     return () => observer.disconnect();
-  }, [menu.x, menu.y, menu.isTouch, menu.trigger]);
+  }, [menu.x, menu.y, menu.isTouch, menu.isAnchored, menu.trigger]);
 
   useEffect(() => {
     function handlePointerDown(event: PointerEvent) {
@@ -223,6 +246,8 @@ function ContextMenuPopup({ menu, onClose, label, children }: ContextMenuPopupPr
   return (
     <div
       ref={layerRef}
+      // Меню закрывается нашими обработчиками: у manual нет ни своего «клика мимо», ни Esc
+      popover="manual"
       className={styles.layer}
       style={{ left: menu.x, top: menu.y, visibility: "hidden" }}
       onContextMenu={(event) => event.preventDefault()}

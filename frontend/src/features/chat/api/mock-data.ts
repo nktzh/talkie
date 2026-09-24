@@ -1,3 +1,4 @@
+import { MOCK_AVATARS, mockAvatar } from "@/entities/user/api/mock-avatars";
 import { getMockCurrentUser } from "@/entities/user/api/mock-user";
 import { createForwardedContent } from "../lib/forward";
 import { createMessageReply } from "../lib/reply";
@@ -140,12 +141,24 @@ function mockVideo(name: string, hue: number, width: number, height: number, dur
 }
 
 const USERS = {
-  anna: { id: "u-anna", displayName: "Анна Смирнова", username: "anna_sm" },
-  max: { id: "u-max", displayName: "Максим Орлов", username: "orlov" },
-  kate: { id: "u-kate", displayName: "Екатерина Лебедева", username: "kate_l" },
-  dmitry: { id: "u-dmitry", displayName: "Дмитрий Козлов", username: "dkozlov" },
-  olga: { id: "u-olga", displayName: "Ольга Петрова", username: "olga_p" },
-  ivan: { id: "u-ivan", displayName: "Иван Соколов", username: "sokolov" },
+  anna: {
+    id: "u-anna",
+    displayName: "Анна Смирнова",
+    username: "anna_sm",
+    avatarUrl: MOCK_AVATARS["u-anna"],
+    status: "✍️",
+  },
+  max: { id: "u-max", displayName: "Максим Орлов", username: "orlov", avatarUrl: MOCK_AVATARS["u-max"], status: "😎" },
+  kate: { id: "u-kate", displayName: "Екатерина Лебедева", username: "kate_l", status: "🥰" },
+  dmitry: { id: "u-dmitry", displayName: "Дмитрий Козлов", username: "dkozlov", avatarUrl: MOCK_AVATARS["u-dmitry"] },
+  olga: {
+    id: "u-olga",
+    displayName: "Ольга Петрова",
+    username: "olga_p",
+    avatarUrl: MOCK_AVATARS["u-olga"],
+    status: "🏆",
+  },
+  ivan: { id: "u-ivan", displayName: "Иван Соколов", username: "sokolov", avatarUrl: MOCK_AVATARS["u-ivan"], status: "⚡" },
   sergey: { id: "u-sergey", displayName: "Сергей Волков", username: "volkov_s" },
   maria: { id: "u-maria", displayName: "Мария Кузнецова", username: "mkuz" },
   alexey: { id: "u-alexey", displayName: "Алексей Новиков", username: "novikov" },
@@ -156,7 +169,13 @@ const USERS = {
 } satisfies Record<string, User>;
 
 const BOTS = {
-  talkie: { id: "b-talkie", displayName: "Talkie Bot", username: "talkie_bot" },
+  talkie: {
+    id: "b-talkie",
+    displayName: "Talkie Bot",
+    username: "talkie_bot",
+    avatarUrl: MOCK_AVATARS["b-talkie"],
+    status: "🫡",
+  },
   weather: { id: "b-weather", displayName: "Погодный бот", username: "weather_bot" },
   translate: { id: "b-translate", displayName: "Переводчик", username: "translate_bot" },
 } satisfies Record<string, User>;
@@ -249,6 +268,8 @@ function createSeeds(at: (minutesAgo: number) => string): ConversationSeed[] {
         kind: "group",
         id: "team",
         title: "Команда Talkie",
+        avatarUrl: mockAvatar(240),
+        status: "⚡",
         role: "owner",
         membersCount: 6,
         members: [me, ivan, dmitry, olga, anna, kate],
@@ -324,6 +345,8 @@ function createSeeds(at: (minutesAgo: number) => string): ConversationSeed[] {
         kind: "channel",
         id: "talkie-news",
         title: "Talkie News",
+        status: "🎉",
+        avatarUrl: mockAvatar(12),
         subscribersCount: 12_480,
         role: "subscriber",
         reactionsEnabled: true,
@@ -419,6 +442,7 @@ function createSeeds(at: (minutesAgo: number) => string): ConversationSeed[] {
         kind: "channel",
         id: "design-notes",
         title: "Дизайн-заметки",
+        status: "🤩",
         subscribersCount: 842,
         role: "owner",
         reactionsEnabled: true,
@@ -466,6 +490,7 @@ function createSeeds(at: (minutesAgo: number) => string): ConversationSeed[] {
         kind: "group",
         id: "altai",
         title: "Выходные на Алтае",
+        status: "🔥",
         role: "member",
         membersCount: 5,
         members: [me, dmitry, anna, kate, max],
@@ -864,8 +889,12 @@ export function createMockDatabase(now = Date.now()): MockDatabase {
         conversationId: conversation.id,
         author:
           seed.from === "channel"
-            ? { id: conversation.id, displayName: conversation.title }
-            : { id: seed.from.id, displayName: seed.from.displayName },
+            ? {
+                id: conversation.id,
+                displayName: conversation.title,
+                avatarUrl: conversation.kind === "channel" ? conversation.avatarUrl : undefined,
+              }
+            : { id: seed.from.id, displayName: seed.from.displayName, avatarUrl: seed.from.avatarUrl },
         text: seed.text,
         format: seed.format,
         createdAt: at(seed.minutesAgo),

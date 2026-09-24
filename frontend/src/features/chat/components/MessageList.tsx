@@ -9,6 +9,7 @@ import { useMessageReactions } from "../hooks/useMessageReactions";
 import { formatDaySeparator } from "../lib/format";
 import { buildMessageListDays, type MessageListDay } from "../lib/message-list";
 import { createMessageReply, getForwardSourceHref, resolveReplyQuote } from "../lib/reply";
+import { warmEmojiFont } from "../lib/warm-emoji";
 import { useChatStore } from "../model/chat-store";
 import { areReactionsEnabled } from "../model/selectors";
 import type { Conversation, ConversationId, Message, MessageId, MessageReaction, UserId } from "../model/types";
@@ -38,6 +39,12 @@ export function MessageList({ messages, conversation, currentUserId, onForward, 
 
   const lastMessage = messages.at(-1);
   const lastOwnMessageId = lastMessage?.author.id === currentUserId ? lastMessage.id : null;
+
+  // Палитру реакций открывают из меню сообщения — к этому времени шрифт эмодзи уже должен быть разложен,
+  // иначе первое открытие ждёт его на месте (см. warm-emoji)
+  useEffect(() => {
+    if (showReactions) return warmEmojiFont();
+  }, [showReactions]);
 
   // Лента развёрнута через column-reverse: scrollTop = 0 — это самый низ,
   // поэтому чат открывается на последних сообщениях без JS.

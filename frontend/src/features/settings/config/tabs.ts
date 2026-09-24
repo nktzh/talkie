@@ -1,4 +1,4 @@
-import { SecurityLockIcon, UserIcon } from "@hugeicons/core-free-icons";
+import { PaintBoardIcon, SecurityLockIcon, UserIcon } from "@hugeicons/core-free-icons";
 import type { IconSvgElement } from "@/shared/ui";
 import type { SettingsTabId } from "../types";
 
@@ -16,6 +16,12 @@ export const SETTINGS_TABS: readonly SettingsTab[] = [
     label: "Профиль",
     description: "Как вас видят другие пользователи",
     icon: UserIcon,
+  },
+  {
+    id: "appearance",
+    label: "Оформление",
+    description: "Тема и цвет интерфейса",
+    icon: PaintBoardIcon,
   },
   {
     id: "security",

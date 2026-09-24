@@ -1,0 +1,66 @@
+.picker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.button {
+  position: relative;
+  display: grid;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.button:disabled {
+  cursor: default;
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+/* Подсказка «сменить фото»: поверх аватара, пока на него не навели, её не видно */
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: rgb(0 0 0 / 0.45);
+  color: #ffffff;
+  opacity: 0;
+  transition: opacity var(--duration-fast) var(--ease-out);
+}
+
+/* Пока фото сохраняется, затемнение остаётся: под ним крутится индикатор */
+.button:hover .overlay,
+.button:focus-visible .overlay,
+.button[aria-busy] .overlay {
+  opacity: 1;
+}
+
+.spinner {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  animation: spin 700ms linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Поле выбора файла открывается кликом по аватару и само по себе не показывается */
+.input {
+  display: none;
+}
+
+.error {
+  max-width: 320px;
+}

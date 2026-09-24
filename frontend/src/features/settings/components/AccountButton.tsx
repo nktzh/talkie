@@ -21,7 +21,7 @@ export function AccountButton() {
         aria-label={`Настройки аккаунта ${user.displayName}`}
         title="Настройки"
       >
-        <Avatar id={user.id} name={user.displayName} size={36} />
+        <Avatar id={user.id} name={user.displayName} src={user.avatarUrl} size={36} />
       </button>
 
       <SettingsModal open={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />

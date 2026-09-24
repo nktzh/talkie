@@ -62,7 +62,7 @@ function createSavedMessage(
   return {
     id: createLocalId("message"),
     conversationId,
-    author: { id: author.id, displayName: author.displayName },
+    author: { id: author.id, displayName: author.displayName, avatarUrl: author.avatarUrl },
     ...content,
     createdAt: new Date().toISOString(),
     status: "sent",

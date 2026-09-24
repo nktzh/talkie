@@ -4,6 +4,7 @@ import { UserAdd01Icon } from "@hugeicons/core-free-icons";
 import Link from "next/link";
 import { useState, type ReactNode } from "react";
 import { useDirectChat } from "@/features/chat";
+import { StatusEmoji } from "@/shared/emoji";
 import { cn } from "@/shared/lib/cn";
 import { usePrefetchOnIntent } from "@/shared/lib/usePrefetchOnIntent";
 import { Avatar, Button, Icon, Logo } from "@/shared/ui";
@@ -63,15 +64,18 @@ export function ContactsPanel({ titleId, action, onOpenChat }: ContactsPanelProp
  * которую можно открыть в новой вкладке; если нет — чат создаётся по клику.
  */
 function ContactRow({ contact, onOpenChat }: { contact: Contact; onOpenChat?: () => void }) {
-  const { id, displayName, username } = contact;
-  const { href, open, isPending } = useDirectChat({ id, displayName, username }, onOpenChat);
+  const { id, displayName, username, avatarUrl, status } = contact;
+  const { href, open, isPending } = useDirectChat({ id, displayName, username, avatarUrl, status }, onOpenChat);
   const { prefetch, intentHandlers } = usePrefetchOnIntent();
 
   const body = (
     <>
-      <Avatar id={contact.id} name={contact.displayName} size={44} />
+      <Avatar id={contact.id} name={contact.displayName} src={contact.avatarUrl} size={44} />
       <div className={styles.info}>
-        <p className={styles.name}>{contact.displayName}</p>
+        <p className={styles.name}>
+          {contact.displayName}
+          {status && <StatusEmoji status={status} size={14} className={styles.nameStatus} />}
+        </p>
         <p className={styles.meta}>@{contact.username}</p>
       </div>
       <p className={styles.phone}>{contact.phone}</p>

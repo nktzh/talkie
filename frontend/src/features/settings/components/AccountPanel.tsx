@@ -1,12 +1,12 @@
 "use client";
 
-import { ArrowRight01Icon, Logout03Icon, PaintBoardIcon, Ticket01Icon } from "@hugeicons/core-free-icons";
+import { ArrowRight01Icon, Logout03Icon, Ticket01Icon } from "@hugeicons/core-free-icons";
 import Link from "next/link";
 import { useState, type ReactNode } from "react";
 import { useCurrentUser } from "@/entities/user";
 import { InviteModal } from "@/features/invite";
+import { StatusEmoji } from "@/shared/emoji";
 import { cn } from "@/shared/lib/cn";
-import { ThemeToggle } from "@/shared/theme";
 import { Avatar, Icon, type IconSvgElement } from "@/shared/ui";
 import { SETTINGS_TABS } from "../config/tabs";
 import styles from "./AccountPanel.module.css";
@@ -22,8 +22,11 @@ export function AccountPanel() {
   return (
     <div className={styles.panel}>
       <header className={styles.header}>
-        <Avatar id={user.id} name={user.displayName} size={72} />
-        <h1 className={styles.name}>{user.displayName}</h1>
+        <Avatar id={user.id} name={user.displayName} src={user.avatarUrl} size={72} />
+        <h1 className={styles.name}>
+          {user.displayName}
+          {user.status && <StatusEmoji status={user.status} size={18} className={styles.nameStatus} />}
+        </h1>
         <p className={styles.username}>@{user.username}</p>
       </header>
 
@@ -50,10 +53,6 @@ export function AccountPanel() {
             <RowContent icon={Ticket01Icon} label="Пригласительный код" />
             <Icon icon={ArrowRight01Icon} size={18} className={styles.chevron} />
           </button>
-        </li>
-        <li className={styles.row}>
-          <RowContent icon={PaintBoardIcon} label="Оформление" />
-          <ThemeToggle className={styles.themeToggle} />
         </li>
       </ul>
 

@@ -1,4 +1,5 @@
-import { findPaletteEmoji, getEmojiKey, MAX_OWN_REACTIONS } from "../config/reactions";
+import { isSameEmoji } from "@/shared/emoji";
+import { findPaletteEmoji, MAX_OWN_REACTIONS } from "../config/reactions";
 import type { MessageReaction } from "../model/types";
 
 /*
@@ -8,9 +9,7 @@ import type { MessageReaction } from "../model/types";
  * поэтому их результаты не расходятся.
  */
 
-export function isSameEmoji(a: string, b: string): boolean {
-  return getEmojiKey(a) === getEmojiKey(b);
-}
+export { isSameEmoji };
 
 /** Реакции текущего пользователя, от самой старой к самой новой */
 export function getOwnReactions(reactions: readonly MessageReaction[] = []): string[] {

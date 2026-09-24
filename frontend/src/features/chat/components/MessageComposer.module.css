@@ -22,6 +22,8 @@
 
 /*
  * ===== Появление панели форматирования =====
+ * Панель — отдельная лента над карточкой (собственное стекло), поэтому слот лежит рядом с ней,
+ * а не внутри: события он не перехватывает, их принимают сами стеклянные элементы панели.
  * Высота раскрывается через grid-template-rows 0fr → 1fr — так анимируется высота «по содержимому».
  * Пока панель закрыта или раскрывается, лишнее обрезается; раскрытой — нет, иначе
  * обрезались бы всплывающие меню заголовков и таблицы. Поэтому overflow переключается
@@ -51,6 +53,8 @@
 
 .toolbarSlotInner {
   min-height: 0;
+  /* Без нуля элемент грида растёт под ширину кнопок, и лента не сжимается до прокрутки */
+  min-width: 0;
   transform: translateY(-6px);
   transition: transform var(--duration-base) var(--ease-out);
 }
@@ -61,18 +65,49 @@
 
 .row {
   display: flex;
+  flex-wrap: wrap;
   align-items: flex-end;
   gap: 2px;
   padding: 4px;
 }
 
-.row .attach {
+/*
+ * ===== Развёрнутая строка ввода =====
+ * Пока текст умещается в строку, поле стоит между кнопками — панель остаётся капсулой.
+ * В режиме markdown и когда текст перерос одну строку, поле занимает всю ширину карточки
+ * и уходит на собственную строку (order: -1 при flex-wrap), чтобы текст начинался от края
+ * блока, а не из-за скрепки; кнопки переносятся под поле.
+ */
+.rowExpanded .input,
+.rowExpanded .preview {
+  order: -1;
+  flex-basis: 100%;
+  /* Отступ шире, чем у строки-капсулы: текст встаёт вровень с иконками кнопок под ним */
+  padding: 10px 12px;
+}
+
+/* Скрепка остаётся у левого края, переключатель и отправка — у правого, как в одну строку */
+.row.rowExpanded .markdownToggle {
+  margin-left: auto;
+}
+
+/*
+ * Скрепка, переключатель markdown и кнопка действия подсвечиваются одинаково:
+ * полупрозрачная заливка (непрозрачная выглядела бы пятном на стекле) и акцентная иконка.
+ */
+.row .attach,
+.row .markdownToggle {
   width: 40px;
   height: 40px;
   margin: 2px;
+  transition:
+    background-color var(--duration-base) var(--ease-out),
+    color var(--duration-base) var(--ease-out);
 }
 
-.row .attach:hover {
+.row .attach:hover,
+.row .markdownToggle:hover {
+  background: var(--color-menu-item-hover);
   color: var(--color-accent-text);
 }
 
@@ -132,16 +167,6 @@
 }
 
 /* ===== Переключатель markdown ===== */
-
-.row .markdownToggle {
-  width: 40px;
-  height: 40px;
-  margin: 2px;
-}
-
-.row .markdownToggle:hover {
-  color: var(--color-accent-text);
-}
 
 .row .markdownToggleActive {
   background: var(--color-accent-soft);

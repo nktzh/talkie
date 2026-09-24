@@ -1,4 +1,11 @@
-export { changePassword, getCurrentUser, updateProfile } from "./api/user-api";
+export {
+  changePassword,
+  getCurrentUser,
+  removeAvatar,
+  updateAvatar,
+  updateProfile,
+  updateStatus,
+} from "./api/user-api";
 export { getDisplayName } from "./lib/display-name";
 export {
   NAME_MAX_LENGTH,

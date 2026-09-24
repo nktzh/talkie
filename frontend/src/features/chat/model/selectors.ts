@@ -26,6 +26,20 @@ export function getConversationUsername(conversation: Conversation): string | nu
   return conversation.username ?? null;
 }
 
+/** Фото чата: у личной переписки и бота — аватар собеседника, у группы и канала — своё */
+export function getConversationAvatarUrl(conversation: Conversation): string | undefined {
+  if (conversation.kind === "direct") return conversation.peer.avatarUrl;
+  if (conversation.kind === "bot") return conversation.bot.avatarUrl;
+  return conversation.avatarUrl;
+}
+
+/** Эмодзи-статус чата: у личной переписки и бота — статус собеседника, у группы и канала — свой */
+export function getConversationStatus(conversation: Conversation): string | undefined {
+  if (conversation.kind === "direct") return conversation.peer.status;
+  if (conversation.kind === "bot") return conversation.bot.status;
+  return conversation.status;
+}
+
 function matchesSearchQuery(conversation: Conversation, normalizedQuery: string): boolean {
   const username = getConversationUsername(conversation);
   const searchable = username ? [conversation.title, username] : [conversation.title];
@@ -92,6 +106,11 @@ export function canLeaveConversation(conversation: Conversation): boolean {
 /** Реакции выключает владелец группы или канала; в личной переписке и с ботом они есть всегда */
 export function areReactionsEnabled(conversation: Conversation): boolean {
   return conversation.kind === "group" || conversation.kind === "channel" ? conversation.reactionsEnabled : true;
+}
+
+/** Статус группы или канала задаёт только владелец: он виден всем в списке чатов и в шапке */
+export function canManageStatus(conversation: Conversation): boolean {
+  return (conversation.kind === "group" || conversation.kind === "channel") && conversation.role === "owner";
 }
 
 /** Включать и выключать реакции может только владелец группы или канала */

@@ -115,8 +115,23 @@ function supportsRefraction(): boolean {
   return refractionSupported;
 }
 
+/**
+ * Запросы переиспользуются: стекло есть в каждом меню и на каждой панели, а getSnapshot вызывается
+ * по нескольку раз за отрисовку — matchMedia на каждый из них заметно дороже поиска в Map
+ */
+const mediaQueries = new Map<string, MediaQueryList>();
+
+function getMediaQuery(query: string): MediaQueryList {
+  let list = mediaQueries.get(query);
+  if (!list) {
+    list = window.matchMedia(query);
+    mediaQueries.set(query, list);
+  }
+  return list;
+}
+
 function subscribeToRefractionQueries(onChange: () => void) {
-  const lists = [FINE_POINTER_QUERY, REDUCED_TRANSPARENCY_QUERY].map((query) => window.matchMedia(query));
+  const lists = [FINE_POINTER_QUERY, REDUCED_TRANSPARENCY_QUERY].map(getMediaQuery);
   lists.forEach((list) => list.addEventListener("change", onChange));
   return () => lists.forEach((list) => list.removeEventListener("change", onChange));
 }
@@ -130,8 +145,8 @@ function useRefraction(): boolean {
     subscribeToRefractionQueries,
     () =>
       supportsRefraction() &&
-      window.matchMedia(FINE_POINTER_QUERY).matches &&
-      !window.matchMedia(REDUCED_TRANSPARENCY_QUERY).matches,
+      getMediaQuery(FINE_POINTER_QUERY).matches &&
+      !getMediaQuery(REDUCED_TRANSPARENCY_QUERY).matches,
     () => false,
   );
 }

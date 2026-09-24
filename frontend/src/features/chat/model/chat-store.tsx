@@ -26,6 +26,7 @@ type ChatAction =
   | { type: "muteToggled"; conversationId: ConversationId }
   | { type: "pinChanged"; conversationId: ConversationId; isPinned: boolean }
   | { type: "blockChanged"; conversationId: ConversationId; isBlocked: boolean }
+  | { type: "statusChanged"; conversationId: ConversationId; status: string | undefined }
   | { type: "reactionsToggled"; conversationId: ConversationId; isEnabled: boolean }
   | { type: "messageReactionsChanged"; message: Message; reactions: MessageReaction[] }
   | { type: "messageUpserted"; message: Message; replacesId?: MessageId }
@@ -91,6 +92,16 @@ function chatReducer(state: ChatState, action: ChatAction): ChatState {
         conversations: state.conversations.map((conversation) =>
           conversation.id === action.conversationId && conversation.kind === "direct"
             ? { ...conversation, isBlocked: action.isBlocked }
+            : conversation,
+        ),
+      };
+
+    case "statusChanged":
+      return {
+        ...state,
+        conversations: state.conversations.map((conversation) =>
+          conversation.id === action.conversationId && (conversation.kind === "group" || conversation.kind === "channel")
+            ? { ...conversation, status: action.status }
             : conversation,
         ),
       };
@@ -230,6 +241,8 @@ interface ChatStoreValue extends ChatState {
   setPinned: (conversationId: ConversationId, isPinned: boolean) => void;
   /** Блокировка собеседника в личной переписке */
   setBlocked: (conversationId: ConversationId, isBlocked: boolean) => void;
+  /** Эмодзи-статус группы или канала; undefined — статус убран */
+  setStatus: (conversationId: ConversationId, status: string | undefined) => void;
   /** Реакции в группе или канале, которые включает и выключает владелец */
   setReactionsEnabled: (conversationId: ConversationId, isEnabled: boolean) => void;
   /** Итоговый список реакций сообщения — оптимистичный или подтверждённый сервером */
@@ -263,6 +276,7 @@ export function ChatStoreProvider({ initialConversations, children }: ChatStoreP
     toggleMute: (conversationId) => dispatch({ type: "muteToggled", conversationId }),
     setPinned: (conversationId, isPinned) => dispatch({ type: "pinChanged", conversationId, isPinned }),
     setBlocked: (conversationId, isBlocked) => dispatch({ type: "blockChanged", conversationId, isBlocked }),
+    setStatus: (conversationId, status) => dispatch({ type: "statusChanged", conversationId, status }),
     setReactionsEnabled: (conversationId, isEnabled) =>
       dispatch({ type: "reactionsToggled", conversationId, isEnabled }),
     setMessageReactions: (message, reactions) => dispatch({ type: "messageReactionsChanged", message, reactions }),

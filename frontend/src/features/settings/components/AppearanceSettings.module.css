@@ -1,0 +1,171 @@
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.title {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+}
+
+.hint {
+  margin-top: -8px;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+/* ===== Тема ===== */
+
+.modes {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.mode {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 8px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  text-align: center;
+  transition:
+    background-color var(--duration-fast),
+    border-color var(--duration-fast),
+    color var(--duration-fast);
+}
+
+.mode:hover {
+  background: var(--color-surface-hover);
+  color: var(--color-text);
+}
+
+/*
+ * Выбранная тема берётся из data-theme на <html>, а не из состояния компонента:
+ * подсветка не зависит от гидратации. Отсутствие атрибута — вариант «как в системе»
+ */
+:global(html[data-theme="light"]) .mode[data-mode="light"],
+:global(html[data-theme="dark"]) .mode[data-mode="dark"],
+:global(html:not([data-theme])) .mode[data-mode="system"] {
+  border-color: var(--color-accent);
+  background: var(--color-accent-soft);
+  color: var(--color-accent-text);
+  font-weight: 600;
+}
+
+/* ===== Цвет оформления ===== */
+
+.accents {
+  display: grid;
+  /* Все цвета — одним рядом: на узких экранах колонки сжимаются, но не переносятся */
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+}
+
+.accent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 4px;
+  border-radius: var(--radius-md);
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  transition:
+    background-color var(--duration-fast),
+    color var(--duration-fast);
+}
+
+.accent:hover {
+  background: var(--color-surface-hover);
+}
+
+/*
+ * Выбранный цвет — так же из data-accent на <html>. Кольцо и галочка включаются
+ * переменными: селекторов пять, а правило с ними одно
+ */
+:global(html[data-accent="blue"]) .accent[data-accent="blue"],
+:global(html[data-accent="purple"]) .accent[data-accent="purple"],
+:global(html[data-accent="orange"]) .accent[data-accent="orange"],
+:global(html[data-accent="green"]) .accent[data-accent="green"],
+:global(html[data-accent="pink"]) .accent[data-accent="pink"] {
+  --swatch-ring: var(--accent-500);
+  --swatch-check: 1;
+
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+/* Образец залит собственной палитрой: data-accent на кнопке переопределяет переменные из tokens.css */
+.swatch {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-full);
+  background: linear-gradient(180deg, var(--accent-500) 0%, var(--accent-700) 100%);
+  outline: 2px solid var(--swatch-ring, transparent);
+  outline-offset: 3px;
+  box-shadow: var(--shadow-sm);
+  color: #ffffff;
+  transition: outline-color var(--duration-fast);
+}
+
+.swatchCheck {
+  opacity: var(--swatch-check, 0);
+  transition: opacity var(--duration-fast) var(--ease-out);
+}
+
+.accentLabel {
+  white-space: nowrap;
+}
+
+/* ===== Предпросмотр ===== */
+
+.preview {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-chat-bg);
+}
+
+.bubbleIn,
+.bubbleOut {
+  max-width: 82%;
+  padding: 7px 12px 8px;
+  border-radius: 18px;
+  font-size: 15px;
+  line-height: 1.35;
+  box-shadow: var(--shadow-sm);
+}
+
+.bubbleIn {
+  align-self: flex-start;
+  background: var(--gradient-bubble-in);
+  color: var(--color-bubble-in-text);
+}
+
+.bubbleOut {
+  align-self: flex-end;
+  background: var(--gradient-bubble-out);
+  color: var(--color-bubble-out-text);
+}

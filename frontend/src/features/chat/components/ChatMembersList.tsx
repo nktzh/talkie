@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { StatusEmoji } from "@/shared/emoji";
 import { cn } from "@/shared/lib/cn";
 import { usePrefetchOnIntent } from "@/shared/lib/usePrefetchOnIntent";
 import { Avatar } from "@/shared/ui";
@@ -70,10 +71,11 @@ function MemberLink({ member }: { member: User }) {
 function MemberInfo({ member, isCurrentUser = false }: { member: User; isCurrentUser?: boolean }) {
   return (
     <>
-      <Avatar id={member.id} name={member.displayName} size={38} className={styles.avatar} />
+      <Avatar id={member.id} name={member.displayName} src={member.avatarUrl} size={38} className={styles.avatar} />
       <span className={styles.info}>
         <span className={styles.name}>
           {member.displayName}
+          {member.status && <StatusEmoji status={member.status} size={14} />}
           {isCurrentUser && <span className={styles.you}>вы</span>}
         </span>
         <span className={styles.username}>@{member.username}</span>

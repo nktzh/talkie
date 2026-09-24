@@ -1,25 +1,58 @@
 /*
- * Все кнопки, включая «Просмотр», — одной лентой, которая начинается там же, где текст сообщения.
- * На узких экранах они переносятся на вторую строку, а не уезжают в прокрутку:
- * контейнер с overflow обрезал бы всплывающие меню заголовков и таблицы.
+ * Панель живёт над композером отдельной строкой: слева — капсула жидкого стекла с кнопками,
+ * справа — такая же стеклянная кнопка предпросмотра. Скругление, подложку, контур
+ * и тень рисует LiquidGlass, поэтому здесь только раскладка и состояния кнопок.
  */
 .toolbar {
+  /*
+   * Общая высота ленты и кнопки предпросмотра. Запас над кнопками нужен ещё и под полосу
+   * прокрутки: она ложится внутрь, поэтому капсула не подрастает, когда кнопки не помещаются.
+   */
+  --toolbar-height: 48px;
+
+  position: relative;
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
-  row-gap: 2px;
-  /*
-   * Лента повторяет границы текста в поле ввода (MessageComposer): слева перед ним 56px —
-   * отступ строки и «Прикрепить», справа после него 102px — markdown и «Отправить».
-   * Слева вычитаем 7px между краем кнопки и иконкой, справа 11px между краем «Просмотра»
-   * и подписью — с границами текста совпадают сами значки и подпись, а не рамки кнопок.
-   */
-  padding: 4px 91px 4px 49px;
+  gap: 8px;
+  /* По бокам без отступов: края ленты и кнопки совпадают с карточкой композера под ними */
+  padding: 0 0 8px;
 }
 
-/* Обёртка не участвует в раскладке: группы переносятся вместе с «Просмотром» как одна лента */
+/*
+ * Капсула — по содержимому, а не во всю строку; min-width позволяет ей сжиматься
+ * уже содержимого, и тогда лишние кнопки уезжают в прокрутку.
+ * Подвал чата прозрачен для событий, стекло их принимает.
+ */
+.toolsGlass {
+  flex: 0 1 auto;
+  min-width: 0;
+  pointer-events: auto;
+}
+
+/*
+ * Кнопки — одной строкой в рост кнопки предпросмотра; что не поместилось, уезжает в прокрутку.
+ * Полосы нет: пальцем ленту смахивают, мышь крутит её колесом (см. MarkdownToolbar.tsx).
+ * Всплывающие меню заголовков и таблицы от обрезки спасает position: fixed —
+ * они не в потоке этого контейнера (там же).
+ */
 .tools {
-  display: contents;
+  display: flex;
+  align-items: center;
+  height: var(--toolbar-height);
+  /*
+   * Отступ — ровно половина разницы высот капсулы и кнопки, поэтому круг кнопки у торца
+   * оказывается соосен его дуге: зазор одинаков и по бокам, и сверху с низом.
+   */
+  padding: 0 8px;
+  /* Прокрутка обрезает по прямоугольнику, поэтому скругление повторяем — иначе видны углы */
+  border-radius: inherit;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+}
+
+.tools::-webkit-scrollbar {
+  display: none;
 }
 
 .group {
@@ -43,7 +76,8 @@
   width: 32px;
   height: 32px;
   flex-shrink: 0;
-  border-radius: var(--radius-sm);
+  /* Круглые — по форме капсулы: у её краёв прямоугольная подсветка выходила бы за дугу */
+  border-radius: var(--radius-full);
   color: var(--color-text-secondary);
   transition:
     background-color var(--duration-fast),
@@ -65,15 +99,16 @@
 }
 
 .menu {
-  position: relative;
   flex-shrink: 0;
 }
 
+/*
+ * Координаты ставит JS: fixed выносит меню из прокручиваемой ленты, иначе она бы его обрезала.
+ * Ни у одного предка нет transform или filter, поэтому fixed считается от окна, а не от панели.
+ */
 .popover {
-  position: absolute;
-  bottom: calc(100% + 8px);
-  left: 0;
-  z-index: 10;
+  position: fixed;
+  z-index: 40;
   border-radius: var(--radius-md);
   background: var(--color-surface-raised);
   border: 1px solid var(--color-border);
@@ -113,19 +148,116 @@
   background: var(--color-surface-hover);
 }
 
+/* ===== Подсказка про прокрутку ===== */
+
+/*
+ * Полосы прокрутки у ленты нет, поэтому о кнопках за её краем иначе не догадаться.
+ * Лежит рядом с лентой, а не внутри: прокрутка обрезала бы её по краю капсулы.
+ * Отсчитывается от стекла, поэтому хвостик приходится ровно на середину капсулы.
+ * Показывается только мыши и только по наведению — пальцем ленту смахивают не задумываясь,
+ * а постоянная надпись мешала бы читать переписку.
+ */
+.hint {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 11px;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-lg);
+  font-size: 12.5px;
+  white-space: nowrap;
+  color: var(--color-text-secondary);
+  /* Подсказка не должна перехватывать наведение у ленты, иначе она мигала бы */
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--duration-fast) var(--ease-out);
+}
+
+/*
+ * Хвостик — квадрат, повёрнутый на 45°: у треугольника из границ не было бы рамки.
+ * Видимыми оставляем правую и нижнюю стороны — после поворота это две нижние грани,
+ * а верхняя половина прячется под самой подсказкой, чтобы не было шва.
+ */
+.hint::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  width: 9px;
+  height: 9px;
+  margin: -5px 0 0 -5px;
+  transform: rotate(45deg);
+  background: var(--color-surface-raised);
+  border-right: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.mouse {
+  flex-shrink: 0;
+  width: 12px;
+  height: 16.5px;
+}
+
+.wheel {
+  animation: hint-wheel 1.8s var(--ease-out) infinite;
+}
+
+/* Точка появляется у верха колеса, сбегает вниз и гаснет */
+@keyframes hint-wheel {
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+
+  25%,
+  65% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(5px);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wheel {
+    animation: none;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .toolsGlass:hover .hint {
+    opacity: 1;
+  }
+}
+
 /* ===== Переключатель предпросмотра ===== */
 
+/* Прижата к концу строки: капсула её больше не растягивает */
+.previewGlass {
+  flex-shrink: 0;
+  margin-left: auto;
+  pointer-events: auto;
+}
+
+/* Кнопка заполняет стеклянную капсулу: фон и контур даёт стекло */
 .preview {
   display: flex;
   align-items: center;
   gap: 6px;
-  flex-shrink: 0;
-  height: 32px;
-  /* Прижат к концу строки, в том числе когда переносится вместе с кнопками на вторую строку */
-  margin-left: auto;
-  padding: 0 11px 0 9px;
-  border-radius: var(--radius-sm);
+  height: var(--toolbar-height);
+  padding: 0 14px 0 12px;
+  border-radius: inherit;
   font-size: 13.5px;
+  white-space: nowrap;
   color: var(--color-text-secondary);
   transition:
     background-color var(--duration-fast),
@@ -137,67 +269,26 @@
   color: var(--color-text);
 }
 
-.previewActive {
-  background: var(--color-accent-soft);
-  color: var(--color-accent-text);
-}
-
+.previewActive,
 .previewActive:hover {
   background: var(--color-accent-soft);
   color: var(--color-accent-text);
 }
 
 @media (--mobile) {
+  /* Экран узкий — отдаём ленте всю строку */
+  .toolsGlass {
+    flex: 1;
+  }
+
+  /* Для подписи места нет — остаётся круг со значком */
   .previewLabel {
     display: none;
   }
 
   .preview {
+    justify-content: center;
+    width: var(--toolbar-height);
     padding: 0;
-    width: 32px;
-    justify-content: center;
-  }
-
-  /* На телефоне ширина текста слишком мала для ленты кнопок — отдаём ей всю карточку и центрируем */
-  .toolbar {
-    justify-content: center;
-    padding: 4px;
-  }
-
-  /*
-   * Ленту делим на две строки сами, а не ждём переноса: иначе вторая строка начиналась бы
-   * с черты-разделителя и съезжала от центра. Разрыв — псевдоэлемент обёртки
-   * (при display: contents он встаёт в общий ряд), а через order за него уходят
-   * списки со ссылкой, таблица и «Просмотр».
-   */
-  .tools::after {
-    content: "";
-    flex-basis: 100%;
-    order: 1;
-  }
-
-  .tools > :nth-child(n + 4),
-  .preview {
-    order: 2;
-  }
-
-  .tools > .group:nth-child(4)::before {
-    display: none;
-  }
-
-  /* «Просмотр» встаёт рядом с кнопками, а отделяет его такая же черта, как между группами */
-  .preview {
-    position: relative;
-    margin-left: 11px;
-  }
-
-  .preview::before {
-    content: "";
-    position: absolute;
-    top: 7px;
-    left: -6px;
-    width: 1px;
-    height: 18px;
-    background: var(--color-border);
   }
 }

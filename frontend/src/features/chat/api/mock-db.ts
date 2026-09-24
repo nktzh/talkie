@@ -61,6 +61,16 @@ export function setMockMessageReactions(
   );
 }
 
+/** Статус группы или канала; undefined — статуса нет */
+export function setMockConversationStatus(conversationId: ConversationId, status: string | undefined): void {
+  const mockDatabase = getMockDatabase();
+  mockDatabase.conversations = mockDatabase.conversations.map((conversation) =>
+    conversation.id === conversationId && (conversation.kind === "group" || conversation.kind === "channel")
+      ? { ...conversation, status }
+      : conversation,
+  );
+}
+
 export function setMockReactionsEnabled(conversationId: ConversationId, reactionsEnabled: boolean): void {
   const mockDatabase = getMockDatabase();
   mockDatabase.conversations = mockDatabase.conversations.map((conversation) =>

@@ -7,7 +7,7 @@
   max-width: max(var(--info-panel-width), calc(100% - 360px));
   flex-shrink: 0;
   min-height: 0;
-  background: var(--color-surface);
+  background: var(--color-panel);
   border-left: 1px solid var(--color-border);
 }
 
@@ -44,7 +44,7 @@
 
 /* Кружок «в сети» обводится цветом панели, а не списка чатов */
 .avatar {
-  --avatar-ring: var(--color-surface);
+  --avatar-ring: var(--color-panel);
   margin-bottom: 14px;
 }
 
@@ -54,6 +54,10 @@
   line-height: 1.25;
   letter-spacing: -0.01em;
   overflow-wrap: anywhere;
+}
+
+.nameStatus {
+  margin-left: 6px;
 }
 
 .username {

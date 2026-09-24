@@ -15,8 +15,8 @@
   width: 100%;
   max-width: var(--content-max-width);
   margin: 0 auto;
-  /* Нижняя панель чата лежит поверх ленты — оставляем под ней место */
-  padding: 12px 0 calc(8px + var(--chat-footer-height, 0px));
+  /* Нижняя панель чата лежит поверх ленты — оставляем место под ней и под хвостом её градиента */
+  padding: 12px 0 calc(8px + var(--chat-footer-height, 0px) + var(--chat-footer-fade, 0px));
 }
 
 /* Граница для sticky-разделителя: он не выходит за пределы своего дня */

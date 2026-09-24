@@ -1,4 +1,4 @@
-export type SettingsTabId = "profile" | "security";
+export type SettingsTabId = "profile" | "security" | "appearance";
 
 export interface ProfileFormValues {
   firstName: string;

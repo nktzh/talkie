@@ -4,7 +4,7 @@
   flex: 1;
   min-width: 0;
   min-height: 0;
-  background: var(--color-surface);
+  background: var(--color-panel);
 }
 
 .header {

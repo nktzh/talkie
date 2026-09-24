@@ -4,6 +4,10 @@
   /* Отступ шапки над заголовком и под поиском — в замер не входит, список учитывает его сам.
      Сверху к нему добавляется строка состояния, если страница заходит под неё */
   --chat-list-header-inset: calc(28px + var(--safe-area-top));
+  /* Хвост градиента под папками: единственная часть шапки, сквозь которую видно список */
+  --chat-list-header-fade: 32px;
+  /* До этой отметки фон непрозрачен, дальше начинается спад: заголовок целиком стоит на плотном фоне */
+  --chat-list-header-solid: calc(54px + var(--safe-area-top));
 
   position: relative;
   display: flex;
@@ -14,8 +18,19 @@
 
 /*
  * Шапка лежит поверх списка, как нижняя панель чата — только градиент идёт сверху вниз.
- * Градиент — фон самой шапки: он рисуется под слоями стекла с отрицательным z-index
- * и не затемняет их. Нижний padding продлевает градиент под поиском, но в замер высоты не входит.
+ * Градиент — фон самой шапки; нижний padding продлевает его под папками, но в замер
+ * высоты не входит.
+ *
+ * Плотность падает сверху вниз: backdrop-filter поля поиска и папок размывает всё,
+ * что нарисовано под ними, вместе с этим фоном — под непрозрачным градиентом стекло
+ * выродилось бы в плоскую заливку. Непрозрачен поэтому только верх — по строку заголовка,
+ * где плотный фон нужен, иначе строки списка проступают сквозь текст. Растворяется градиент
+ * ниже заголовка и дотлевает под поиском и папками: там список видно сквозь стекло.
+ *
+ * Ступеней много, и крайние из них почти не меняют плотность: у линейного спада виден его старт —
+ * плотность обрывается под заголовком видимой границей. Кривая ниже повторяет smoothstep:
+ * трогается и замирает плавно, а весь спад растянут до самого низа шапки, поэтому границы
+ * не видно ни там, где он начинается, ни там, где сходит на нет.
  */
 .header {
   position: absolute;
@@ -26,12 +41,20 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  padding: calc(18px + var(--safe-area-top)) 16px 32px;
+  padding: calc(18px + var(--safe-area-top)) 16px var(--chat-list-header-fade);
   background: linear-gradient(
     to bottom,
-    var(--color-surface) 0%,
-    color-mix(in srgb, var(--color-surface) 85%, transparent) 30%,
-    color-mix(in srgb, var(--color-surface) 40%, transparent) 65%,
+    var(--color-panel) var(--chat-list-header-solid),
+    color-mix(in srgb, var(--color-panel) 99%, transparent) calc(var(--chat-list-header-solid) + 7px),
+    color-mix(in srgb, var(--color-panel) 96%, transparent) calc(var(--chat-list-header-solid) + 15px),
+    color-mix(in srgb, var(--color-panel) 90%, transparent) calc(var(--chat-list-header-solid) + 22px),
+    color-mix(in srgb, var(--color-panel) 81%, transparent) calc(var(--chat-list-header-solid) + 29px),
+    color-mix(in srgb, var(--color-panel) 70%, transparent) calc(var(--chat-list-header-solid) + 37px),
+    color-mix(in srgb, var(--color-panel) 56%, transparent) calc(var(--chat-list-header-solid) + 46px),
+    color-mix(in srgb, var(--color-panel) 41%, transparent) calc(var(--chat-list-header-solid) + 55px),
+    color-mix(in srgb, var(--color-panel) 28%, transparent) calc(var(--chat-list-header-solid) + 64px),
+    color-mix(in srgb, var(--color-panel) 16%, transparent) calc(var(--chat-list-header-solid) + 74px),
+    color-mix(in srgb, var(--color-panel) 7%, transparent) calc(var(--chat-list-header-solid) + 83px),
     transparent 100%
   );
   /* Прозрачные места пропускают прокрутку и клики к списку; заголовок и поиск включают события сами */

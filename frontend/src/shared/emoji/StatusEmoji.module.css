@@ -1,0 +1,8 @@
+.status {
+  flex-shrink: 0;
+  font-family: var(--font-emoji);
+  font-size: var(--status-size, 15px);
+  line-height: 1;
+  /* Эмодзи выше строчных букв — без сдвига оно тянет строку вверх */
+  translate: 0 0.05em;
+}

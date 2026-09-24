@@ -41,7 +41,7 @@ export function TabBar({ className }: { className?: string }) {
           href={ACCOUNT_ROUTE}
           label="Аккаунт"
           isActive={isAccount}
-          glyph={<Avatar id={user.id} name={user.displayName} size={22} />}
+          glyph={<Avatar id={user.id} name={user.displayName} src={user.avatarUrl} size={22} />}
         />
       </nav>
     </LiquidGlass>

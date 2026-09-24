@@ -127,11 +127,31 @@
   background: var(--md-surface);
 }
 
+.codeBlockWrap {
+  position: relative;
+}
+
 .codeBlock {
-  padding: 9px 11px;
+  /* Справа — место под кнопку: короткий код под неё не заезжает */
+  padding: 9px 44px 9px 11px;
   border-radius: var(--radius-sm);
   background: var(--md-surface);
   overflow-x: auto;
+}
+
+/*
+ * Кнопка стоит в углу контейнера, а не внутри прокрутки, поэтому длинные строки уезжают под неё —
+ * своя подложка отделяет её от кода. Селектор с контейнером перебивает базовые стили кнопки
+ */
+.codeBlockWrap .codeCopy {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: color-mix(in srgb, currentColor 10%, transparent);
+}
+
+.codeBlockWrap .codeCopy:hover {
+  background: color-mix(in srgb, currentColor 22%, transparent);
 }
 
 /* Внутри блока подложка уже есть у самого блока */

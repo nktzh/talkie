@@ -4,6 +4,18 @@
   z-index: 100;
 }
 
+/* Меню поднято в верхний слой, иначе модальное окно накрыло бы его. Своего вида этому слою не нужно */
+.layer:popover-open {
+  inset: auto;
+  width: auto;
+  height: auto;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  overflow: visible;
+  background: transparent;
+}
+
 .menu {
   display: flex;
   flex-direction: column;

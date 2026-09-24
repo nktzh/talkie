@@ -40,7 +40,7 @@
 }
 
 .row[data-side="out"] .bubble {
-  --skeleton-color: color-mix(in srgb, var(--color-bubble-out) 35%, var(--color-chat-bg));
+  --skeleton-color: color-mix(in srgb, var(--color-bubble-out) 35%, var(--color-feed));
 }
 
 /* Размеры и отступы — как у MessageComposer, чтобы при появлении чата ничего не прыгнуло */

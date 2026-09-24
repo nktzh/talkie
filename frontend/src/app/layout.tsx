@@ -1,7 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Roboto_Mono } from "next/font/google";
 import { getPanelSizesStyle } from "@/shared/panel-sizes/server";
-import { getPreferredTheme } from "@/shared/theme/server";
+import { FaviconLink, THEME_BACKGROUNDS } from "@/shared/theme";
+import { getPreferredAccent, getPreferredTheme } from "@/shared/theme/server";
 import "@/shared/styles/tokens.css";
 import "./globals.css";
 
@@ -30,29 +31,48 @@ export const metadata: Metadata = {
   description: "Мессенджер Talkie",
 };
 
-export const viewport: Viewport = {
-  // Страница заходит под вырезы и полосу «домой», иначе env(safe-area-inset-*) в iOS всегда 0.
-  // Отступы от них расставлены в вёрстке через --safe-area-* из tokens.css
-  viewportFit: "cover",
-  // Chrome на Android (108+) по умолчанию не сжимает layout viewport под клавиатуру — поле ввода уходило бы под неё
-  interactiveWidget: "resizes-content",
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f4f4f5" },
-    { media: "(prefers-color-scheme: dark)", color: "#070708" },
-  ],
-};
+export async function generateViewport(): Promise<Viewport> {
+  const theme = await getPreferredTheme();
+
+  return {
+    // Страница заходит под вырезы и полосу «домой», иначе env(safe-area-inset-*) в iOS всегда 0.
+    // Отступы от них расставлены в вёрстке через --safe-area-* из tokens.css
+    viewportFit: "cover",
+    // Chrome на Android (108+) по умолчанию не сжимает layout viewport под клавиатуру — поле ввода уходило бы под неё
+    interactiveWidget: "resizes-content",
+    /*
+     * Строка состояния (часы, заряд) на мобильных красится в фон приложения.
+     * Тема выбрана вручную — цвет один и тот же при любой системной настройке,
+     * выбора нет — отдаём обе и идём за системой
+     */
+    themeColor: theme
+      ? THEME_BACKGROUNDS[theme]
+      : [
+          { media: "(prefers-color-scheme: light)", color: THEME_BACKGROUNDS.light },
+          { media: "(prefers-color-scheme: dark)", color: THEME_BACKGROUNDS.dark },
+        ],
+  };
+}
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {
-  const [theme, panelSizes] = await Promise.all([getPreferredTheme(), getPanelSizesStyle()]);
+  const [theme, accent, panelSizes] = await Promise.all([
+    getPreferredTheme(),
+    getPreferredAccent(),
+    getPanelSizesStyle(),
+  ]);
 
   return (
     <html
       lang="ru"
       className={`${inter.variable} ${robotoMono.variable}`}
       data-theme={theme ?? undefined}
+      data-accent={accent}
       style={panelSizes}
     >
-      <body>{children}</body>
+      <body>
+        <FaviconLink theme={theme} accent={accent} />
+        {children}
+      </body>
     </html>
   );
 }

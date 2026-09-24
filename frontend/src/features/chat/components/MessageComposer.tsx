@@ -14,6 +14,7 @@ import {
 import dynamic from "next/dynamic";
 import {
   useEffect,
+  useLayoutEffect,
   useRef,
   useState,
   type ChangeEvent,
@@ -101,6 +102,8 @@ export function MessageComposer({ placeholder, attachments, replyDraft, onSend }
   const [text, setText] = useState("");
   /** Режим markdown: панель форматирования и увеличенное поле ввода */
   const [isMarkdown, setIsMarkdown] = useState(false);
+  /** Текст перерос одну строку: поле встаёт во всю ширину карточки */
+  const [isWrapped, setIsWrapped] = useState(false);
   const [isPreview, setIsPreview] = useState(false);
   /** Панель форматирования монтируется при первом включении markdown и дальше остаётся в разметке */
   const [hasToolbar, setHasToolbar] = useState(false);
@@ -117,12 +120,32 @@ export function MessageComposer({ placeholder, attachments, replyDraft, onSend }
   /** Экранная клавиатура: Shift как модификатор не работает, поэтому Enter только переносит строку */
   const isTouch = useMediaQuery("(pointer: coarse)");
 
+  /*
+   * Перенос ловим по высоте, а не по символам: строку рвёт и сам браузер, когда текст не влез.
+   * Обратно к одной строке возвращаемся только на пустом поле: во всю ширину тот же текст
+   * снова умещается в строку, и разметка принялась бы мигать туда-сюда на каждом символе.
+   */
+  useLayoutEffect(() => {
+    const textarea = textareaRef.current;
+    if (!textarea || text.length === 0) {
+      setIsWrapped(false);
+      return;
+    }
+    if (isWrapped) return;
+
+    const { lineHeight, paddingTop, paddingBottom } = getComputedStyle(textarea);
+    const singleLine = parseFloat(paddingTop) + parseFloat(paddingBottom) + parseFloat(lineHeight);
+    setIsWrapped(textarea.scrollHeight > singleLine * 1.25);
+  }, [text, isWrapped]);
+
   const trimmedText = text.trim();
   const hasAttachments = attachments.items.length > 0;
   const canSend = trimmedText.length > 0 || hasAttachments;
   const isRecording = recorder.status === "recording";
   const isRequestingDevice = recorder.status === "requesting";
   const isToolbarOpen = isMarkdown && !isRecording;
+  /** Многострочный ввод и markdown: поле во всю ширину, кнопки под ним */
+  const isExpanded = (isMarkdown || isWrapped) && !isRecording;
   // В режиме markdown записи нет: кнопка всегда отправляет и гаснет, пока отправлять нечего
   const mode: ActionMode = isRecording ? "send-recording" : canSend || isMarkdown ? "send" : "record";
 
@@ -250,17 +273,17 @@ export function MessageComposer({ placeholder, attachments, replyDraft, onSend }
         </div>
       )}
 
+      {/* Панель всегда в разметке, чтобы появляться и исчезать плавно; скрытая — недоступна */}
+      <div className={styles.toolbarSlot} data-open={isToolbarOpen || undefined} inert={!isToolbarOpen}>
+        <div className={styles.toolbarSlotInner}>
+          {hasToolbar && (
+            <MarkdownToolbar editor={editor} isPreview={isPreview} onTogglePreview={() => setIsPreview((on) => !on)} />
+          )}
+        </div>
+      </div>
+
       {/* Капсула, пока панель в одну строку; с панелью форматирования — скруглённая карточка */}
       <LiquidGlass radius={isMarkdown ? CARD_RADIUS_MARKDOWN : CARD_RADIUS} className={styles.card}>
-        {/* Панель всегда в разметке, чтобы появляться и исчезать плавно; скрытая — недоступна */}
-        <div className={styles.toolbarSlot} data-open={isToolbarOpen || undefined} inert={!isToolbarOpen}>
-          <div className={styles.toolbarSlotInner}>
-            {hasToolbar && (
-              <MarkdownToolbar editor={editor} isPreview={isPreview} onTogglePreview={() => setIsPreview((on) => !on)} />
-            )}
-          </div>
-        </div>
-
         {replyDraft && (
           <ComposerReply
             reply={replyDraft.reply}
@@ -282,7 +305,7 @@ export function MessageComposer({ placeholder, attachments, replyDraft, onSend }
           />
         )}
 
-        <form className={styles.row} onSubmit={handleSubmit}>
+        <form className={cn(styles.row, isExpanded && styles.rowExpanded)} onSubmit={handleSubmit}>
           {isRecording ? (
             <RecordingBar
               kind={recorder.kind}

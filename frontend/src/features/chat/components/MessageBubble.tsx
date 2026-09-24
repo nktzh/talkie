@@ -109,7 +109,14 @@ export function MessageBubble({
     >
       {showAuthor && (
         <div className={styles.avatarSlot}>
-          {isLastInGroup && <Avatar id={message.author.id} name={message.author.displayName} size={34} />}
+          {isLastInGroup && (
+            <Avatar
+              id={message.author.id}
+              name={message.author.displayName}
+              src={message.author.avatarUrl}
+              size={34}
+            />
+          )}
         </div>
       )}
 

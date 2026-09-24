@@ -13,6 +13,12 @@
   display: none;
 }
 
+/*
+ * Матовое стекло, как у поля поиска: подложка сама по себе полупрозрачна,
+ * но размытие под ней не даёт строкам списка читаться сквозь папку.
+ * Не через LiquidGlass: преломление на пяти пилюлях в прокручиваемой строке
+ * пересчитывалось бы в каждом кадре, а на мобильных его всё равно нет — там только размытие.
+ */
 .chip {
   display: inline-flex;
   align-items: center;
@@ -21,7 +27,10 @@
   height: 32px;
   padding: 0 14px;
   border-radius: var(--radius-full);
-  background: var(--color-input-bg);
+  background: var(--color-glass-tint);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  backdrop-filter: blur(12px) saturate(180%);
+  box-shadow: var(--glass-edge-shadow);
   color: var(--color-text-secondary);
   font-size: 14px;
   font-weight: 500;
@@ -31,10 +40,24 @@
     color var(--duration-fast);
 }
 
+/* Акцент подмешан в ту же подложку: активная папка плотнее соседей, но остаётся стеклом */
 .active {
-  background: var(--color-accent-soft);
+  background: color-mix(in srgb, var(--color-accent) 26%, var(--color-glass-tint));
   color: var(--color-accent-text);
   font-weight: 600;
+}
+
+/* Просьба уменьшить прозрачность: плотная подложка вместо размытия — как у остального стекла */
+@media (prefers-reduced-transparency: reduce) {
+  .chip {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background: var(--color-surface-raised);
+  }
+
+  .active {
+    background: color-mix(in srgb, var(--color-accent) 26%, var(--color-surface-raised));
+  }
 }
 
 .count {

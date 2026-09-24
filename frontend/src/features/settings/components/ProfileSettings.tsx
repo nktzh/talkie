@@ -10,9 +10,11 @@ import {
   useCurrentUser,
 } from "@/entities/user";
 import { readString, useFormSubmit } from "@/shared/lib/form";
-import { Avatar, Button, FormAlert, TextField } from "@/shared/ui";
+import { Button, FormAlert, TextField } from "@/shared/ui";
 import { validateProfileForm } from "../lib/validation";
 import type { ProfileFormValues } from "../types";
+import { AvatarPicker } from "./AvatarPicker";
+import { ProfileStatusButton } from "./ProfileStatusButton";
 import styles from "./SettingsForm.module.css";
 
 function readProfileValues(formData: FormData): ProfileFormValues {
@@ -44,9 +46,10 @@ export function ProfileSettings() {
   return (
     <div className={styles.stack}>
       <header className={styles.profileHeader}>
-        <Avatar id={user.id} name={user.displayName} size={72} />
+        <AvatarPicker />
         <p className={styles.profileName}>{user.displayName}</p>
         <p className={styles.profileMeta}>@{user.username}</p>
+        <ProfileStatusButton />
       </header>
 
       <form className={styles.form} onSubmit={handleSubmit} noValidate>

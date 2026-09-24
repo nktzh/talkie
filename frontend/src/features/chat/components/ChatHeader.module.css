@@ -6,7 +6,7 @@
   height: calc(var(--header-height) + var(--safe-area-top));
   flex-shrink: 0;
   padding: var(--safe-area-top) 12px 0 20px;
-  background: var(--color-surface);
+  background: var(--color-panel);
   border-bottom: 1px solid var(--color-border);
 }
 

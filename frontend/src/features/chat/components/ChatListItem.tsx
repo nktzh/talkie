@@ -1,6 +1,7 @@
 import { Pin02Icon, VolumeMute01Icon } from "@hugeicons/core-free-icons";
 import Link from "next/link";
 import type { MouseEvent } from "react";
+import { StatusEmoji } from "@/shared/emoji";
 import { cn } from "@/shared/lib/cn";
 import { useLongPress, type LongPress } from "@/shared/lib/useLongPress";
 import { usePrefetchOnIntent } from "@/shared/lib/usePrefetchOnIntent";
@@ -8,6 +9,7 @@ import { Avatar, Icon } from "@/shared/ui";
 import { CONVERSATION_KIND_ICONS } from "../config/conversation-kinds";
 import { formatChatListDate } from "../lib/format";
 import { getLastMessagePreview } from "../lib/preview";
+import { getConversationAvatarUrl, getConversationStatus } from "../model/selectors";
 import type { Conversation, UserId } from "../model/types";
 import { MessageStatusIcon } from "./MessageStatusIcon";
 import styles from "./ChatListItem.module.css";
@@ -34,6 +36,7 @@ export function ChatListItem({
   const { lastMessage, unreadCount } = conversation;
   const preview = getLastMessagePreview(conversation, currentUserId);
   const kindIcon = CONVERSATION_KIND_ICONS[conversation.kind];
+  const status = getConversationStatus(conversation);
   const isOwnLastMessage = conversation.kind !== "channel" && lastMessage?.author.id === currentUserId;
   // Клик после долгого касания гасится хуком — чат под пальцем не откроется вместе с меню
   const longPress = useLongPress<HTMLAnchorElement>((press) => onLongPress?.(press, conversation));
@@ -57,6 +60,7 @@ export function ChatListItem({
       <Avatar
         id={conversation.id}
         name={conversation.title}
+        src={getConversationAvatarUrl(conversation)}
         size={50}
         isOnline={conversation.kind === "direct" && conversation.isOnline}
       />
@@ -65,6 +69,7 @@ export function ChatListItem({
         <div className={styles.row}>
           {kindIcon && <Icon icon={kindIcon} size={16} className={styles.kindIcon} />}
           <span className={styles.title}>{conversation.title}</span>
+          {status && <StatusEmoji status={status} />}
           {conversation.isMuted && <Icon icon={VolumeMute01Icon} size={14} className={styles.mutedIcon} />}
 
           {lastMessage && (

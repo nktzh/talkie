@@ -1,29 +1,94 @@
 "use client";
 
-import { SmileIcon } from "@hugeicons/core-free-icons";
+import { SmileIcon, SmilePlusIcon } from "@hugeicons/core-free-icons";
 import { useId, useRef, useState } from "react";
+import { getStatusName, StatusEmoji, StatusPicker } from "@/shared/emoji";
 import { cn } from "@/shared/lib/cn";
 import { Icon } from "@/shared/ui";
-import { setConversationReactionsEnabled } from "../api/chat-actions";
+import { setConversationReactionsEnabled, setConversationStatus } from "../api/chat-actions";
 import { useChatStore } from "../model/chat-store";
-import { canManageReactions } from "../model/selectors";
+import { canManageReactions, canManageStatus } from "../model/selectors";
 import type { ChannelConversation, Conversation, GroupConversation } from "../model/types";
 import { ChatInfoSection } from "./ChatInfoSection";
 import styles from "./ChatInfoSettings.module.css";
 
+type ManagedConversation = GroupConversation | ChannelConversation;
+
 /** Настройки чата, доступные владельцу. Остальным раздел не показывается */
 export function ChatInfoSettings({ conversation }: { conversation: Conversation }) {
   if (conversation.kind !== "group" && conversation.kind !== "channel") return null;
-  if (!canManageReactions(conversation)) return null;
+
+  const canEditStatus = canManageStatus(conversation);
+  const canEditReactions = canManageReactions(conversation);
+  if (!canEditStatus && !canEditReactions) return null;
 
   return (
     <ChatInfoSection title="Настройки">
-      <ReactionsSwitch conversation={conversation} />
+      {canEditStatus && <StatusRow conversation={conversation} />}
+      {canEditReactions && <ReactionsSwitch conversation={conversation} />}
     </ChatInfoSection>
   );
 }
 
-function ReactionsSwitch({ conversation }: { conversation: GroupConversation | ChannelConversation }) {
+/** Эмодзи-статус рядом с названием: его видят все, кому виден сам чат */
+function StatusRow({ conversation }: { conversation: ManagedConversation }) {
+  const { setStatus } = useChatStore();
+  const [isPickerOpen, setIsPickerOpen] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  // Номер последнего выбора: ошибка по устаревшему не откатит свежий
+  const latestRequest = useRef(0);
+  const hintId = useId();
+  const { status } = conversation;
+  const isChannel = conversation.kind === "channel";
+  const subject = isChannel ? "канала" : "группы";
+
+  // Статус меняется сразу, как и переключатель реакций; если сервер откажет — возвращается прежний
+  function choose(next: string | null) {
+    setIsPickerOpen(false);
+    const previous = status;
+    const requestId = ++latestRequest.current;
+    setError(null);
+    setStatus(conversation.id, next ?? undefined);
+
+    setConversationStatus(conversation.id, next).catch(() => {
+      if (latestRequest.current !== requestId) return;
+      setStatus(conversation.id, previous);
+      setError("Не удалось сохранить статус. Попробуйте ещё раз");
+    });
+  }
+
+  return (
+    <>
+      <button
+        type="button"
+        aria-haspopup="dialog"
+        aria-describedby={hintId}
+        className={styles.row}
+        onClick={() => setIsPickerOpen(true)}
+      >
+        <Icon icon={SmilePlusIcon} size={20} className={styles.icon} />
+        <span className={styles.body}>
+          <span className={styles.label}>Статус</span>
+          <span id={hintId} className={cn(styles.hint, error && styles.error)}>
+            {error ?? (status ? getStatusName(status) : `Эмодзи рядом с названием ${subject}`)}
+          </span>
+        </span>
+        {status && <StatusEmoji status={status} size={22} />}
+      </button>
+
+      <StatusPicker
+        open={isPickerOpen}
+        title={`Статус ${subject}`}
+        description={`Эмодзи рядом с названием увидят все ${isChannel ? "подписчики" : "участники"}`}
+        value={status}
+        onSelect={choose}
+        onClose={() => setIsPickerOpen(false)}
+      />
+    </>
+  );
+}
+
+function ReactionsSwitch({ conversation }: { conversation: ManagedConversation }) {
   const { setReactionsEnabled } = useChatStore();
   const [error, setError] = useState<string | null>(null);
   // Номер последнего переключения: ошибка по устаревшему не откатит свежее

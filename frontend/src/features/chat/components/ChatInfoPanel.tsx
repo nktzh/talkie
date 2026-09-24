@@ -2,11 +2,12 @@
 
 import { Cancel01Icon } from "@hugeicons/core-free-icons";
 import { useCurrentUser } from "@/entities/user";
+import { StatusEmoji } from "@/shared/emoji";
 import { cn } from "@/shared/lib/cn";
 import { PanelResizeHandle } from "@/shared/panel-sizes";
 import { Avatar, Icon, IconButton } from "@/shared/ui";
 import { getConversationSubtitle } from "../lib/preview";
-import { getConversationUsername } from "../model/selectors";
+import { getConversationAvatarUrl, getConversationStatus, getConversationUsername } from "../model/selectors";
 import type { Conversation, Message, MessageId } from "../model/types";
 import { ChatInfoActions } from "./ChatInfoActions";
 import { ChatInfoSettings } from "./ChatInfoSettings";
@@ -29,6 +30,7 @@ export function ChatInfoPanel({ conversation, messages, onClose, onShowMessage }
   const { user: currentUser } = useCurrentUser();
   const username = getConversationUsername(conversation);
   const isOnline = conversation.kind === "direct" && conversation.isOnline;
+  const status = getConversationStatus(conversation);
 
   return (
     <aside className={styles.panel} aria-label={`Информация о чате «${conversation.title}»`}>
@@ -51,11 +53,15 @@ export function ChatInfoPanel({ conversation, messages, onClose, onShowMessage }
           <Avatar
             id={conversation.id}
             name={conversation.title}
+            src={getConversationAvatarUrl(conversation)}
             size={112}
             isOnline={isOnline}
             className={styles.avatar}
           />
-          <h3 className={styles.name}>{conversation.title}</h3>
+          <h3 className={styles.name}>
+            {conversation.title}
+            {status && <StatusEmoji status={status} size={18} className={styles.nameStatus} />}
+          </h3>
           {username && <p className={styles.username}>@{username}</p>}
           <p className={cn(styles.status, isOnline && styles.online)} suppressHydrationWarning>
             {getConversationSubtitle(conversation)}

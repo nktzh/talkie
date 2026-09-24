@@ -70,7 +70,7 @@ svg {
 }
 
 :focus-visible {
-  outline: 2px solid var(--malibu-500);
+  outline: 2px solid var(--accent-500);
   outline-offset: 2px;
 }
 
@@ -87,7 +87,7 @@ button:focus-visible,
 }
 
 ::selection {
-  background: rgb(100 175 246 / 0.35);
+  background: color-mix(in srgb, var(--accent-400) 35%, transparent);
 }
 
 * {

@@ -1,4 +1,5 @@
 import { getDisplayName, normalizePhone } from "@/entities/user";
+import { MOCK_AVATARS } from "@/entities/user/api/mock-avatars";
 import { delay } from "@/shared/lib/delay";
 import type { Contact, ContactFormValues } from "../types";
 
@@ -15,6 +16,8 @@ let mockContacts: Contact[] = [
     displayName: "Анна Смирнова",
     username: "anna_sm",
     phone: "+79001234567",
+    avatarUrl: MOCK_AVATARS["u-anna"],
+    status: "✍️",
   },
   {
     id: "u-max",
@@ -23,6 +26,8 @@ let mockContacts: Contact[] = [
     displayName: "Максим Орлов",
     username: "orlov",
     phone: "+79007654321",
+    avatarUrl: MOCK_AVATARS["u-max"],
+    status: "😎",
   },
 ];
 

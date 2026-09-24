@@ -1,5 +1,5 @@
 .item {
-  --avatar-ring: var(--color-surface);
+  --avatar-ring: var(--color-panel);
 
   display: flex;
   align-items: center;

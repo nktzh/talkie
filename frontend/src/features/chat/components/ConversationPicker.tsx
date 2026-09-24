@@ -7,7 +7,7 @@ import { useMediaQuery } from "@/shared/lib/useMediaQuery";
 import { Avatar, Icon } from "@/shared/ui";
 import { CONVERSATION_KIND_ICONS } from "../config/conversation-kinds";
 import { getConversationSubtitle } from "../lib/preview";
-import { searchConversations } from "../model/selectors";
+import { getConversationAvatarUrl, searchConversations } from "../model/selectors";
 import type { Conversation, ConversationId } from "../model/types";
 import styles from "./ConversationPicker.module.css";
 
@@ -98,7 +98,12 @@ export function ConversationPicker({ conversations, selectedIds, onSelect, empty
                   onClick={() => onSelect(conversation)}
                 >
                   <span className={styles.avatar}>
-                    <Avatar id={conversation.id} name={conversation.title} size={42} />
+                    <Avatar
+                      id={conversation.id}
+                      name={conversation.title}
+                      src={getConversationAvatarUrl(conversation)}
+                      size={42}
+                    />
                     {isMultiple && (
                       <span className={styles.check} aria-hidden="true">
                         <Icon icon={Tick02Icon} size={12} strokeWidth={3} />

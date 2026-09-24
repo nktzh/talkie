@@ -1,0 +1,28 @@
+/*
+ * Кнопка живёт внутри пузыря сообщения, поэтому цвета берёт у него: приглушённый —
+ * тот же, что у времени, а на наведении иконка доходит до цвета текста.
+ */
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  border-radius: var(--radius-full);
+  color: var(--bubble-muted, currentColor);
+  transition:
+    background-color var(--duration-fast),
+    color var(--duration-fast);
+}
+
+.button:hover {
+  background: color-mix(in srgb, currentColor 14%, transparent);
+  color: inherit;
+}
+
+/* Подтверждение держится пару секунд — и без наведения */
+.done {
+  color: inherit;
+}

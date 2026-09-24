@@ -1,17 +1,98 @@
-/* ===== Палитра бренда ===== */
+/* ===== Акцентные палитры =====
+   Цвет оформления выбирает пользователь, он живёт в data-accent на <html>.
+   Палитры объявлены не на :root, а на голом [data-accent]: тогда переменные можно
+   переопределить и внутри страницы — на образцах цвета в настройках.
+   Блоки идут после значений по умолчанию: специфичность у них одинаковая, решает порядок. */
 :root {
-  --malibu-50: #eff7ff;
-  --malibu-100: #dcecfd;
-  --malibu-200: #c1dffc;
-  --malibu-300: #8bc7fa;
-  --malibu-400: #64aff6;
-  --malibu-500: #3f8ff2;
-  --malibu-600: #2a72e6;
-  --malibu-700: #215cd4;
-  --malibu-800: #214bac;
-  --malibu-900: #214287;
-  --malibu-950: #182a53;
+  --accent-50: #eff7ff;
+  --accent-100: #dcecfd;
+  --accent-200: #c1dffc;
+  --accent-300: #8bc7fa;
+  --accent-400: #64aff6;
+  --accent-500: #3f8ff2;
+  --accent-600: #2a72e6;
+  --accent-700: #215cd4;
+  --accent-800: #214bac;
+  --accent-900: #214287;
+  --accent-950: #182a53;
+}
 
+/* Океан — синий, исходный цвет бренда */
+[data-accent="blue"] {
+  --accent-50: #eff7ff;
+  --accent-100: #dcecfd;
+  --accent-200: #c1dffc;
+  --accent-300: #8bc7fa;
+  --accent-400: #64aff6;
+  --accent-500: #3f8ff2;
+  --accent-600: #2a72e6;
+  --accent-700: #215cd4;
+  --accent-800: #214bac;
+  --accent-900: #214287;
+  --accent-950: #182a53;
+}
+
+/* Аметист — фиолетовый */
+[data-accent="purple"] {
+  --accent-50: #f6f3ff;
+  --accent-100: #ede9fe;
+  --accent-200: #ddd6fe;
+  --accent-300: #c4b5fd;
+  --accent-400: #a78bfa;
+  --accent-500: #8b5cf6;
+  --accent-600: #7c3aed;
+  --accent-700: #6929cf;
+  --accent-800: #5722a8;
+  --accent-900: #481d89;
+  --accent-950: #2b0f5b;
+}
+
+/* Янтарь — оранжевый */
+[data-accent="orange"] {
+  --accent-50: #fff7ed;
+  --accent-100: #ffeed6;
+  --accent-200: #fdd8ab;
+  --accent-300: #fbbb75;
+  --accent-400: #f7943c;
+  --accent-500: #ef7317;
+  --accent-600: #d2560b;
+  --accent-700: #ab3f0c;
+  --accent-800: #883211;
+  --accent-900: #6f2a11;
+  --accent-950: #3c1205;
+}
+
+/* Мята — зелёный */
+[data-accent="green"] {
+  --accent-50: #edfbf3;
+  --accent-100: #d3f5e2;
+  --accent-200: #a9eac7;
+  --accent-300: #71d8a5;
+  --accent-400: #3fbe83;
+  --accent-500: #1fa268;
+  --accent-600: #118554;
+  --accent-700: #0e6a45;
+  --accent-800: #0f5439;
+  --accent-900: #0e4531;
+  --accent-950: #04271b;
+}
+
+/* Сакура — розовый */
+[data-accent="pink"] {
+  --accent-50: #fff1f3;
+  --accent-100: #ffe4e8;
+  --accent-200: #fecdd6;
+  --accent-300: #fda4b6;
+  --accent-400: #fb7191;
+  --accent-500: #f43f6b;
+  --accent-600: #e11d52;
+  --accent-700: #be1245;
+  --accent-800: #9f1240;
+  --accent-900: #88133b;
+  --accent-950: #4c051d;
+}
+
+:root {
   --font-sans: var(--font-inter), system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --font-mono: var(--font-roboto-mono), ui-monospace, "SF Mono", "Cascadia Mono", Consolas, monospace;
   /* Цветные эмодзи системы: у Inter своих нет, а без явного стека браузер может взять монохромные */
@@ -54,7 +135,7 @@
 }
 
 /* ===== Светлая тема (по умолчанию) =====
-   Фоны, рамки и текст — нейтральные серые; malibu — только акценты. */
+   Фоны, рамки и текст — нейтральные серые; акцентная палитра — только акценты. */
 :root {
   color-scheme: light;
 
@@ -62,7 +143,7 @@
   --color-surface: #ffffff;
   --color-surface-raised: #ffffff;
   --color-surface-hover: #ededf0;
-  --color-surface-selected: var(--malibu-100);
+  --color-surface-selected: var(--accent-100);
   --color-chat-bg: #eeeef1;
   --color-border: #e4e4e7;
   --color-border-strong: #d4d4d8;
@@ -72,31 +153,56 @@
   --color-text-tertiary: #71717a;
   --color-text-on-accent: #ffffff;
 
-  --color-accent: var(--malibu-600);
-  --color-accent-hover: var(--malibu-700);
-  --color-accent-soft: var(--malibu-100);
-  --color-accent-text: var(--malibu-700);
-  --color-focus-ring: rgb(63 143 242 / 0.35);
+  --color-accent: var(--accent-600);
+  --color-accent-hover: var(--accent-700);
+  --color-accent-soft: var(--accent-100);
+  --color-accent-text: var(--accent-700);
+  --color-focus-ring: color-mix(in srgb, var(--accent-500) 35%, transparent);
 
   --color-input-bg: #f4f4f5;
   --color-input-bg-focus: #ffffff;
 
-  /* Сероватая подложка «жидкого стекла»: фон под ней размывается и преломляется */
-  --color-glass-tint: rgb(48 48 54 / 0.46);
+  /* Белая подложка «жидкого стекла»: фон под ней размывается и преломляется */
+  --color-glass-tint: rgb(255 255 255 / 0.55);
+  /*
+   * Контур стекла. На светлом фоне белый блик по всему кольцу не читается,
+   * поэтому сверху он белый, а нижняя грань — тонкая серая.
+   */
+  --glass-edge: linear-gradient(
+    135deg,
+    rgb(255 255 255 / 0.9) 0%,
+    rgb(255 255 255 / 0.35) 33%,
+    rgb(0 0 0 / 0.09) 66%,
+    rgb(0 0 0 / 0.05) 100%
+  );
+  --glass-edge-shadow:
+    inset 0 0 0 0.5px rgb(255 255 255 / 0.5),
+    inset 0 1px 2px rgb(255 255 255 / 0.85),
+    0 1px 4px rgb(0 0 0 / 0.08);
+  --glass-shadow:
+    0 8px 32px rgb(0 0 0 / 0.1),
+    0 2px 8px rgb(0 0 0 / 0.06);
   --color-menu-item-hover: rgb(0 0 0 / 0.06);
   --color-menu-separator: rgb(0 0 0 / 0.08);
-  --color-tab-active: rgb(255 255 255 / 0.44);
+  --color-tab-active: rgb(255 255 255 / 0.85);
 
-  --color-bubble-out: var(--malibu-600);
+  /*
+   * Пузыри залиты вертикальным градиентом: сверху светлее, снизу темнее.
+   * Плоские --color-bubble-* остаются рядом — из них берут цвет соседи, которым
+   * градиент не нужен: значки внутри пузыря, подложка кружка, скелет ленты.
+   */
+  --color-bubble-out: var(--accent-700);
+  --gradient-bubble-out: linear-gradient(180deg, var(--accent-600) 0%, var(--accent-800) 100%);
   --color-bubble-out-text: #ffffff;
   --color-bubble-out-meta: rgb(255 255 255 / 0.85);
   --color-bubble-in: #ffffff;
+  --gradient-bubble-in: linear-gradient(180deg, #ffffff 0%, #f5f5f7 100%);
   --color-bubble-in-text: var(--color-text);
   --color-bubble-in-meta: var(--color-text-tertiary);
 
-  --color-badge: var(--malibu-600);
+  --color-badge: var(--accent-600);
   --color-badge-muted: #a1a1aa;
-  --color-online: var(--malibu-500);
+  --color-online: var(--accent-500);
 
   --color-danger: #d7373f;
   --color-danger-soft: #fdeced;
@@ -118,7 +224,7 @@
   --color-surface: #0e0e10;
   --color-surface-raised: #1c1c20;
   --color-surface-hover: #18181b;
-  --color-surface-selected: #17253a;
+  --color-surface-selected: color-mix(in srgb, var(--accent-600) 26%, #0e0e10);
   --color-chat-bg: #09090b;
   --color-border: #1c1c1f;
   --color-border-strong: #2e2e33;
@@ -127,28 +233,44 @@
   --color-text-secondary: #a1a1aa;
   --color-text-tertiary: #7f7f88;
 
-  --color-accent: var(--malibu-600);
-  --color-accent-hover: var(--malibu-500);
-  --color-accent-soft: rgb(63 143 242 / 0.16);
-  --color-accent-text: var(--malibu-400);
-  --color-focus-ring: rgb(100 175 246 / 0.4);
+  --color-accent: var(--accent-600);
+  --color-accent-hover: var(--accent-500);
+  --color-accent-soft: color-mix(in srgb, var(--accent-500) 16%, transparent);
+  --color-accent-text: var(--accent-400);
+  --color-focus-ring: color-mix(in srgb, var(--accent-400) 40%, transparent);
 
   --color-input-bg: #18181b;
   --color-input-bg-focus: #0e0e10;
 
   --color-glass-tint: rgb(30 30 34 / 0.62);
+  --glass-edge: linear-gradient(
+    135deg,
+    rgb(255 255 255 / 0) 0%,
+    rgb(255 255 255 / 0.1) 33%,
+    rgb(255 255 255 / 0.26) 66%,
+    rgb(255 255 255 / 0) 100%
+  );
+  --glass-edge-shadow:
+    inset 0 0 0 0.5px rgb(255 255 255 / 0.14),
+    inset 0 1px 3px rgb(255 255 255 / 0.1),
+    0 1px 4px rgb(0 0 0 / 0.22);
+  --glass-shadow:
+    0 8px 32px rgb(0 0 0 / 0.14),
+    0 2px 8px rgb(0 0 0 / 0.1);
   --color-menu-item-hover: rgb(255 255 255 / 0.08);
   --color-menu-separator: rgb(255 255 255 / 0.08);
   --color-tab-active: rgb(255 255 255 / 0.1);
 
-  --color-bubble-out: var(--malibu-700);
+  --color-bubble-out: var(--accent-800);
+  --gradient-bubble-out: linear-gradient(180deg, var(--accent-700) 0%, var(--accent-900) 100%);
   --color-bubble-out-meta: rgb(255 255 255 / 0.75);
   --color-bubble-in: #1a1a1d;
+  --gradient-bubble-in: linear-gradient(180deg, #1f1f23 0%, #171719 100%);
   --color-bubble-in-meta: #85858e;
 
-  --color-badge: var(--malibu-600);
+  --color-badge: var(--accent-600);
   --color-badge-muted: #3f3f46;
-  --color-online: var(--malibu-400);
+  --color-online: var(--accent-400);
 
   --color-danger: #f0666d;
   --color-danger-soft: rgb(240 102 109 / 0.14);
@@ -166,7 +288,7 @@
     --color-surface: #0e0e10;
     --color-surface-raised: #1c1c20;
     --color-surface-hover: #18181b;
-    --color-surface-selected: #17253a;
+    --color-surface-selected: color-mix(in srgb, var(--accent-600) 26%, #0e0e10);
     --color-chat-bg: #09090b;
     --color-border: #1c1c1f;
     --color-border-strong: #2e2e33;
@@ -175,28 +297,44 @@
     --color-text-secondary: #a1a1aa;
     --color-text-tertiary: #7f7f88;
 
-    --color-accent: var(--malibu-600);
-    --color-accent-hover: var(--malibu-500);
-    --color-accent-soft: rgb(63 143 242 / 0.16);
-    --color-accent-text: var(--malibu-400);
-    --color-focus-ring: rgb(100 175 246 / 0.4);
+    --color-accent: var(--accent-600);
+    --color-accent-hover: var(--accent-500);
+    --color-accent-soft: color-mix(in srgb, var(--accent-500) 16%, transparent);
+    --color-accent-text: var(--accent-400);
+    --color-focus-ring: color-mix(in srgb, var(--accent-400) 40%, transparent);
 
     --color-input-bg: #18181b;
     --color-input-bg-focus: #0e0e10;
 
     --color-glass-tint: rgb(30 30 34 / 0.62);
+    --glass-edge: linear-gradient(
+      135deg,
+      rgb(255 255 255 / 0) 0%,
+      rgb(255 255 255 / 0.1) 33%,
+      rgb(255 255 255 / 0.26) 66%,
+      rgb(255 255 255 / 0) 100%
+    );
+    --glass-edge-shadow:
+      inset 0 0 0 0.5px rgb(255 255 255 / 0.14),
+      inset 0 1px 3px rgb(255 255 255 / 0.1),
+      0 1px 4px rgb(0 0 0 / 0.22);
+    --glass-shadow:
+      0 8px 32px rgb(0 0 0 / 0.14),
+      0 2px 8px rgb(0 0 0 / 0.1);
     --color-menu-item-hover: rgb(255 255 255 / 0.08);
     --color-menu-separator: rgb(255 255 255 / 0.08);
     --color-tab-active: rgb(255 255 255 / 0.1);
 
-    --color-bubble-out: var(--malibu-700);
+    --color-bubble-out: var(--accent-800);
+    --gradient-bubble-out: linear-gradient(180deg, var(--accent-700) 0%, var(--accent-900) 100%);
     --color-bubble-out-meta: rgb(255 255 255 / 0.75);
     --color-bubble-in: #1a1a1d;
+    --gradient-bubble-in: linear-gradient(180deg, #1f1f23 0%, #171719 100%);
     --color-bubble-in-meta: #85858e;
 
-    --color-badge: var(--malibu-600);
+    --color-badge: var(--accent-600);
     --color-badge-muted: #3f3f46;
-    --color-online: var(--malibu-400);
+    --color-online: var(--accent-400);
 
     --color-danger: #f0666d;
     --color-danger-soft: rgb(240 102 109 / 0.14);
@@ -204,5 +342,29 @@
     --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.5);
     --shadow-md: 0 8px 24px rgb(0 0 0 / 0.5);
     --shadow-lg: 0 24px 60px rgb(0 0 0 / 0.6);
+  }
+}
+
+/* ===== Фон полноэкранных областей =====
+   На широких экранах панели лежат на фоне приложения и выделяются из него: список чатов и
+   шапка светлее фона, лента сообщений — темнее.
+
+   На мобильных экран занимает одна область во всю ширину, и её фон приходит вплотную к строке
+   состояния (часы, заряд). Красится строка в meta theme-color — он равен --color-bg
+   (см. generateViewport в app/layout.tsx), поэтому любой другой оттенок под ней читается как
+   чужая полоса поверх экрана. Обе области берут там --color-bg: фон один и тот же на всех
+   экранах и продолжается в строку состояния без стыка.
+
+   Токены объявлены отдельно от тем: значение подставляется в месте использования, поэтому
+   светлая и тёмная тема подхватывают свои цвета сами. */
+:root {
+  --color-panel: var(--color-surface);
+  --color-feed: var(--color-chat-bg);
+}
+
+@media (--mobile) {
+  :root {
+    --color-panel: var(--color-bg);
+    --color-feed: var(--color-bg);
   }
 }

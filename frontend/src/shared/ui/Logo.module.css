@@ -1,9 +1,10 @@
 .logo {
   display: inline-flex;
   align-items: center;
+  /* Знак залит currentColor — цвет берётся из акцентной палитры выбранной темы */
+  color: var(--accent-500);
 }
 
 .mark {
   display: block;
-  height: auto;
 }

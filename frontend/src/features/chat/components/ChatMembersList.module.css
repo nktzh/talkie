@@ -29,7 +29,7 @@
 }
 
 .avatar {
-  --avatar-ring: var(--color-surface);
+  --avatar-ring: var(--color-panel);
 }
 
 .info {

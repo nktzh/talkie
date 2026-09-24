@@ -1,8 +1,10 @@
 import { ArrowLeft01Icon, MoreVerticalIcon } from "@hugeicons/core-free-icons";
+import { StatusEmoji } from "@/shared/emoji";
 import { cn } from "@/shared/lib/cn";
 import { Avatar, Icon, IconButton, IconLink } from "@/shared/ui";
 import { CONVERSATION_KIND_ICONS } from "../config/conversation-kinds";
 import { getConversationSubtitle } from "../lib/preview";
+import { getConversationAvatarUrl, getConversationStatus } from "../model/selectors";
 import type { Conversation } from "../model/types";
 import styles from "./ChatHeader.module.css";
 
@@ -16,6 +18,7 @@ interface ChatHeaderProps {
 export function ChatHeader({ conversation, isInfoOpen, onToggleInfo }: ChatHeaderProps) {
   const kindIcon = CONVERSATION_KIND_ICONS[conversation.kind];
   const isOnline = conversation.kind === "direct" && conversation.isOnline;
+  const status = getConversationStatus(conversation);
 
   return (
     <header className={styles.header}>
@@ -24,12 +27,19 @@ export function ChatHeader({ conversation, isInfoOpen, onToggleInfo }: ChatHeade
         <Icon icon={ArrowLeft01Icon} size={22} />
       </IconLink>
 
-      <Avatar id={conversation.id} name={conversation.title} size={42} isOnline={isOnline} />
+      <Avatar
+        id={conversation.id}
+        name={conversation.title}
+        src={getConversationAvatarUrl(conversation)}
+        size={42}
+        isOnline={isOnline}
+      />
 
       <div className={styles.info}>
         <h2 className={styles.title}>
           {kindIcon && <Icon icon={kindIcon} size={16} className={styles.kindIcon} />}
           <span className={styles.titleText}>{conversation.title}</span>
+          {status && <StatusEmoji status={status} size={16} />}
         </h2>
         <p className={cn(styles.subtitle, isOnline && styles.online)} suppressHydrationWarning>
           {getConversationSubtitle(conversation)}

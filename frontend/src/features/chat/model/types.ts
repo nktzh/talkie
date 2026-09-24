@@ -54,7 +54,7 @@ export interface VideoNote {
 
 /** Реакция на сообщение: одна запись на эмодзи, сколько бы людей его ни поставили */
 export interface MessageReaction {
-  /** Эмодзи из палитры (config/reactions). Убранные из палитры продолжают показываться */
+  /** Эмодзи из общей палитры (shared/emoji). Убранные из палитры продолжают показываться */
   emoji: string;
   count: number;
   /** Среди поставивших — текущий пользователь. Бэкенд вычисляет это для каждого запроса */
@@ -99,7 +99,7 @@ export interface Message {
   id: MessageId;
   conversationId: ConversationId;
   /** В каналах автор — сам канал */
-  author: Pick<User, "id" | "displayName">;
+  author: Pick<User, "id" | "displayName" | "avatarUrl">;
   /** Текст; при наличии вложений служит подписью и может быть пустым */
   text: string;
   /** Разметка текста; по умолчанию — plain */
@@ -172,6 +172,10 @@ export type GroupRole = "owner" | "admin" | "member";
 /** Группа: писать могут все участники */
 export interface GroupConversation extends ConversationBase {
   kind: "group";
+  /** Фото группы; без него рисуются инициалы названия */
+  avatarUrl?: string;
+  /** Эмодзи-статус группы из общей палитры (shared/emoji); его задаёт владелец */
+  status?: string;
   role: GroupRole;
   /** Общее число участников: может быть больше, чем загружено в members */
   membersCount: number;
@@ -189,6 +193,10 @@ export type ChannelRole = "owner" | "admin" | "subscriber";
 /** Канал: односторонняя лента постов, как в Telegram */
 export interface ChannelConversation extends ConversationBase {
   kind: "channel";
+  /** Фото канала; без него рисуются инициалы названия */
+  avatarUrl?: string;
+  /** Эмодзи-статус канала из общей палитры (shared/emoji); его задаёт владелец */
+  status?: string;
   subscribersCount: number;
   role: ChannelRole;
   /** Ник канала: по нему канал находят в поиске */

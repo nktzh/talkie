@@ -4,12 +4,16 @@
   flex: 1;
   min-width: 0;
   min-height: 0;
-  background: var(--color-chat-bg);
+  background: var(--color-feed);
 }
 
 .conversation {
   /* До первого замера — высота однострочного поля ввода, чтобы последнее сообщение не пряталось под ним */
   --chat-footer-height: 78px;
+  /* Хвост градиента над панелью: лента оставляет под него место, иначе он ложится на последнее сообщение */
+  --chat-footer-fade: 40px;
+  /* Полностью непрозрачная полоса у самого низа: ниже панели ввода, поэтому стекло она не гасит */
+  --chat-footer-solid: calc(4px + var(--safe-area-bottom));
 
   position: relative;
   display: flex;
@@ -21,9 +25,19 @@
 
 /*
  * Нижняя панель лежит поверх ленты: сообщения уходят под стекло и тонут в градиенте.
- * Градиент — фон самой панели, а не псевдоэлемент: фон рисуется под слоями стекла
- * с отрицательным z-index и не затемняет их. Верхний padding продлевает градиент
+ * Градиент — фон самой панели, а не псевдоэлемент; верхний padding продлевает его
  * выше панели, но в замер высоты не входит.
+ *
+ * Плотность растёт только к нижнему краю: backdrop-filter стекла размывает всё, что
+ * нарисовано под ним, вместе с этим фоном — непрозрачный градиент под карточкой ввода
+ * размывать было бы нечего, и жидкое стекло выродилось бы в плоскую заливку.
+ * Поэтому выше карточки фон прозрачный (сквозь неё видно ленту), гуще он становится
+ * к низу и полностью непрозрачен лишь у самой нижней границы.
+ *
+ * Кривая повторяет smoothstep: крайние ступени почти не меняют плотность, и спад
+ * ни начинается, ни заканчивается видимой границей. Середина спада (50%) приходится
+ * на середину карточки ввода — отсчёт идёт от низа, поэтому растущая панель
+ * (многострочный текст, вложения) поднимается прозрачной частью, а не тянет градиент за собой.
  */
 .footer {
   position: absolute;
@@ -31,13 +45,21 @@
   left: 0;
   right: 0;
   bottom: 0;
-  padding-top: 32px;
+  padding-top: var(--chat-footer-fade);
   background: linear-gradient(
     to top,
-    var(--color-chat-bg) 0%,
-    color-mix(in srgb, var(--color-chat-bg) 85%, transparent) 30%,
-    color-mix(in srgb, var(--color-chat-bg) 40%, transparent) 65%,
-    transparent 100%
+    var(--color-feed) var(--chat-footer-solid),
+    color-mix(in srgb, var(--color-feed) 98%, transparent) calc(var(--chat-footer-solid) + 6px),
+    color-mix(in srgb, var(--color-feed) 93%, transparent) calc(var(--chat-footer-solid) + 13px),
+    color-mix(in srgb, var(--color-feed) 85%, transparent) calc(var(--chat-footer-solid) + 19px),
+    color-mix(in srgb, var(--color-feed) 76%, transparent) calc(var(--chat-footer-solid) + 26px),
+    color-mix(in srgb, var(--color-feed) 65%, transparent) calc(var(--chat-footer-solid) + 32px),
+    color-mix(in srgb, var(--color-feed) 50%, transparent) calc(var(--chat-footer-solid) + 40px),
+    color-mix(in srgb, var(--color-feed) 35%, transparent) calc(var(--chat-footer-solid) + 48px),
+    color-mix(in srgb, var(--color-feed) 22%, transparent) calc(var(--chat-footer-solid) + 56px),
+    color-mix(in srgb, var(--color-feed) 10%, transparent) calc(var(--chat-footer-solid) + 64px),
+    color-mix(in srgb, var(--color-feed) 3%, transparent) calc(var(--chat-footer-solid) + 72px),
+    transparent calc(var(--chat-footer-solid) + 80px)
   );
   /* Прозрачные края пропускают прокрутку и клики к ленте; панели включают события сами */
   pointer-events: none;
@@ -93,7 +115,7 @@
   gap: 12px;
   border: 2px dashed var(--color-accent);
   border-radius: var(--radius-xl);
-  background: color-mix(in srgb, var(--color-chat-bg) 90%, transparent);
+  background: color-mix(in srgb, var(--color-feed) 90%, transparent);
   color: var(--color-accent-text);
   font-size: 16px;
   font-weight: 600;

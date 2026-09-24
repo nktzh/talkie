@@ -2,13 +2,13 @@ import type { CSSProperties } from "react";
 import { cn } from "@/shared/lib/cn";
 import styles from "./Avatar.module.css";
 
-/** Градиенты строятся только из палитры бренда */
+/** Градиенты строятся только из акцентной палитры — аватары подхватывают выбранный цвет оформления */
 const GRADIENTS = [
-  ["var(--malibu-400)", "var(--malibu-600)"],
-  ["var(--malibu-500)", "var(--malibu-800)"],
-  ["var(--malibu-300)", "var(--malibu-700)"],
-  ["var(--malibu-600)", "var(--malibu-900)"],
-  ["var(--malibu-700)", "var(--malibu-950)"],
+  ["var(--accent-400)", "var(--accent-600)"],
+  ["var(--accent-500)", "var(--accent-800)"],
+  ["var(--accent-300)", "var(--accent-700)"],
+  ["var(--accent-600)", "var(--accent-900)"],
+  ["var(--accent-700)", "var(--accent-950)"],
 ] as const;
 
 function hashString(value: string): number {
@@ -33,13 +33,15 @@ interface AvatarProps {
   /** Стабильный идентификатор — от него зависит цвет */
   id: string;
   name: string;
+  /** Загруженное фото; без него показываются инициалы */
+  src?: string;
   size?: number;
   isOnline?: boolean;
   className?: string;
 }
 
 /** Декоративный элемент: имя всегда выводится текстом рядом */
-export function Avatar({ id, name, size = 48, isOnline = false, className }: AvatarProps) {
+export function Avatar({ id, name, src, size = 48, isOnline = false, className }: AvatarProps) {
   const [from, to] = GRADIENTS[hashString(id) % GRADIENTS.length];
   const style = {
     "--avatar-size": `${size}px`,
@@ -49,7 +51,12 @@ export function Avatar({ id, name, size = 48, isOnline = false, className }: Ava
 
   return (
     <span className={cn(styles.avatar, className)} style={style} aria-hidden="true">
-      {getInitials(name)}
+      {src ? (
+        // eslint-disable-next-line @next/next/no-img-element -- фото из data- или object URL, оптимизатору нечего делать
+        <img src={src} alt="" draggable={false} className={styles.photo} />
+      ) : (
+        getInitials(name)
+      )}
       {isOnline && <span className={styles.online} />}
     </span>
   );

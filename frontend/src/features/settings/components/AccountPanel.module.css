@@ -23,6 +23,10 @@
   letter-spacing: -0.01em;
 }
 
+.nameStatus {
+  margin-left: 6px;
+}
+
 .username {
   font-size: 14px;
   color: var(--color-text-secondary);
@@ -101,11 +105,6 @@ li.row:hover {
 .chevron {
   flex-shrink: 0;
   color: var(--color-text-tertiary);
-}
-
-.themeToggle {
-  flex-shrink: 0;
-  margin-right: -8px;
 }
 
 .danger {

@@ -1,6 +1,7 @@
 "use server";
 
 import { getMockCurrentUser } from "@/entities/user/api/mock-user";
+import { parseStatus } from "@/shared/emoji";
 import { delay } from "@/shared/lib/delay";
 import { createLocalId } from "@/shared/lib/id";
 import { findPaletteEmoji, getEmojiKey, MAX_OWN_REACTIONS } from "../config/reactions";
@@ -10,6 +11,7 @@ import {
   canDeleteMessage,
   canLeaveConversation,
   canManageReactions,
+  canManageStatus,
   canReactToMessage,
   findDirectConversation,
 } from "../model/selectors";
@@ -28,6 +30,7 @@ import {
   removeMockConversation,
   removeMockMessage,
   setMockConversationPinned,
+  setMockConversationStatus,
   setMockDirectBlocked,
   setMockMessageReactions,
   setMockReactionsEnabled,
@@ -90,8 +93,8 @@ export async function createGroupConversation({ title, username }: GroupDraft): 
   await delay(500);
   if (username) assertUsernameIsFree(username);
 
-  const { id, displayName, username: authorUsername } = getMockCurrentUser();
-  const author: User = { id, displayName, username: authorUsername };
+  const { id, displayName, username: authorUsername, avatarUrl } = getMockCurrentUser();
+  const author: User = { id, displayName, username: authorUsername, avatarUrl };
 
   const conversation: Conversation = {
     kind: "group",
@@ -245,6 +248,21 @@ export async function setOwnReactions(
   const reactions = applyOwnReactions(message.reactions, emojis);
   setMockMessageReactions(conversationId, messageId, reactions);
   return reactions;
+}
+
+/** Задаёт эмодзи-статус группы или канала; null — убирает его. Это может только владелец */
+export async function setConversationStatus(conversationId: ConversationId, status: string | null): Promise<void> {
+  const parsed = parseStatus(status);
+  await delay(300);
+
+  const conversation = findConversation(conversationId);
+  if (!conversation) return;
+
+  if (!canManageStatus(conversation)) {
+    throw new Error("Статус задаёт только владелец");
+  }
+
+  setMockConversationStatus(conversationId, parsed);
 }
 
 /** Включает или выключает реакции в группе или канале — это может только владелец */

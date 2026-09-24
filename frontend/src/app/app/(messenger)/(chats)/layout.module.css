@@ -16,7 +16,7 @@
   max-width: max(var(--sidebar-default-width), 50%);
   flex-shrink: 0;
   min-height: 0;
-  background: var(--color-surface);
+  background: var(--color-panel);
   border-right: 1px solid var(--color-border);
 }
 
